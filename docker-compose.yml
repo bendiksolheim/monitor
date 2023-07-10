@@ -1,0 +1,6 @@
+services:
+  monitor:
+    image: bendiksolheim/monitor:latest
+    restart: unless-stopped
+    volumes:
+      - ./config:/config
