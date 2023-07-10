@@ -23,7 +23,7 @@ services:
 
 # This is optional. Leave out to use just as a measure of service uptime
 healthcheck:
-  url: "https://hc-ping.com/2901db24-a7f2-4184-9807-0118a5526ff4"
+  url: https://hc-ping.com/1234567890
   expression: "*/10 * * * *"
 ```
 
