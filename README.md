@@ -32,5 +32,7 @@ healthcheck:
 Assuming you have saved your config in `./config/config.yaml`, run this command:
 
 ```sh
-docker run -v ./config:/config -p 3000:3000 bendiksolheim/monitor:{tag}
+docker run -v ./config:/config -p 3000:3000 bendiksolheim/monitor:latest
 ```
+
+See [docker-compose.yml](./docker-compose.yml) for a docker compose example.
