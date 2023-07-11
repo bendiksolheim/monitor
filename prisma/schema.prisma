@@ -16,4 +16,5 @@ model Event {
   service String
   status String
   created DateTime @default(now())
+  latency Int?
 }
