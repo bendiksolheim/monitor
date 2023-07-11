@@ -6,11 +6,13 @@
   "main": "index.js",
   "scripts": {
     "build": "remix build",
-    "start": "cross-env NODE_ENV=production ts-node --esm ./server.ts",
+    "start": "npm run migrate && npm run start:server",
+    "start:server": "cross-env NODE_ENV=production ts-node --esm ./server.ts",
+    "migrate": "prisma migrate deploy",
     "dev": "remix dev -c \"ts-node --esm ./server.ts\"",
     "format": "prettier --write .",
-    "docker:build": "docker image build . -t bendiksolheim/monitor:0.0.7",
-    "docker:publish": " "
+    "docker:build": "docker image build . -t bendiksolheim/monitor:latest -t bendiksolheim/monitor:1.0.0",
+    "docker:push": "docker push bendiksolheim/monitor:latest && docker push bendiksolheim/monitor:1.0.0"
   },
   "keywords": [],
   "author": "",
