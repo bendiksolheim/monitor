@@ -12,16 +12,18 @@ export function schedule(job: Job) {
   cron.schedule(job.expression, async () => {
     try {
       console.log(`Checking ${job.service}`);
+      const start = Date.now();
       const response = await fetch(job.url, {
         signal: AbortSignal.timeout(10000),
         redirect: "manual",
       });
       console.log(`Service ${job.service}: ${response.status}`);
+      const end = Date.now();
       const status = response.status === job.okStatusCode ? "OK" : "ERROR";
-      insert({ service: job.service, status });
+      insert({ service: job.service, status, latency: end - start });
     } catch (e) {
       console.error("Exception during schedule:", e);
-      insert({ service: job.service, status: "ERROR" });
+      insert({ service: job.service, status: "ERROR", latency: null });
     }
   });
 }
