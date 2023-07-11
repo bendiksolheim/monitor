@@ -14,6 +14,7 @@ export function schedule(job: Job) {
       console.log(`Checking ${job.service}`);
       const response = await fetch(job.url, {
         signal: AbortSignal.timeout(10000),
+        redirect: "manual",
       });
       console.log(`Service ${job.service}: ${response.status}`);
       const status = response.status === job.okStatusCode ? "OK" : "ERROR";
