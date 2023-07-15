@@ -18,3 +18,21 @@ export function last<T>(array: Array<T>): T | null {
     return array[array.length - 1];
   }
 }
+
+export function range(size: number): Array<number> {
+  return [...Array(size).keys()];
+}
+
+export function zip<T, U>(a: Array<T>, b: Array<U>): Array<[T, U]> {
+  return a.map((x, i) => {
+    return [x, b[i]];
+  });
+}
+
+export function max<T>(a: Array<T>): T | undefined {
+  if (a.length === 0) {
+    return undefined;
+  } else {
+    return a.reduce((max, cur) => (cur > max ? cur : max), a[0]);
+  }
+}
