@@ -34,13 +34,10 @@ function getClient(): PrismaClient {
   return client;
 }
 
-export async function insert(
-  event: Pick<Event, "service" | "status" | "latency">
-) {
+export async function insert(event: Omit<Event, "id" | "created">) {
   return prisma.event.create({
     data: {
-      service: event.service,
-      status: event.status,
+      ...event,
     },
   });
 }
