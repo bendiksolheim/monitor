@@ -16,7 +16,8 @@ body {
 
 .services {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   list-style: none;
   gap: 10px;
   padding: 0;
@@ -31,30 +32,13 @@ body {
 }
 
 .service__name {
+  font-size: 1.2rem;
   margin: 0;
 }
 
-.service__last-success {
-  margin: 0;
-}
-
-.service__events {
-  display: flex;
-  gap: 3px;
-}
-
-.service__event {
-  border-radius: 3px;
-  height: 25px;
-  width: 3px;
-}
-
-.service__event--OK {
-  background: var(--green);
-}
-
-.service__event--ERROR {
-  background: var(--red);
+.service__operational {
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .pill {

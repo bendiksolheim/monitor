@@ -5,6 +5,7 @@ import { group, last } from "~/util/arrays";
 import { Event } from "@prisma/client";
 import { relativeTimeSince } from "~/util/dates";
 import { Suspense } from "react";
+import { Sparkline } from "~/sparkline";
 
 export const loader = async () => {
   const events = await getEvents();
@@ -47,27 +48,22 @@ export default function Index(): JSX.Element {
 
 function Service(props: { events: Array<Event> }): JSX.Element {
   const { events } = props;
-  const lastSuccess = last(events.filter((event) => event.status === "OK"));
+  const operational = last(events)?.status === "OK";
+  const latencies = events.map((event) => event.latency);
   return (
     <li>
       <div className="service">
         <h2 className="service__name">{events[0].service}</h2>
-        <h3 className="service__last-success">
-          Last success:{" "}
-          <Suspense fallback="-">
-            {lastSuccess !== null
-              ? relativeTimeSince(lastSuccess.created)
-              : "unknown"}
-          </Suspense>
-        </h3>
-        <div className="service__events">
-          {events.map((event) => (
-            <div
-              className={`service__event service__event--${event.status}`}
-              key={event.id}
-              title={`${event.created}`}
-            ></div>
-          ))}
+        <div className="service__operational pill">
+          <div
+            className={`pill__status pill__status--${
+              operational ? "ok" : "error"
+            }`}
+          ></div>
+          <div>{operational ? "Operational" : "Failing"}</div>
+        </div>
+        <div>
+          <Sparkline values={latencies} />
         </div>
       </div>
     </li>
