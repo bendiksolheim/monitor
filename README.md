@@ -6,30 +6,46 @@ Checks the status of configured services at given intervals by making a request 
 
 ## Configuration
 
-```yaml
-services:
-  - service: vg.no
-    expression: "*/10 * * * *"
-    url: https://www.vg.no
-    okStatusCode: 200
-  - service: my-nas
-    expression: "*/10 * * * *"
-    url: http://192.168.1.200:5000
-    okStatusCode: 200
-  - service: Home Assistant
-    expression: "*/10 * * * *"
-    url: http://192.168.1.89:4357
-    okStatusCode: 200
-
-# This is optional. Leave out to use just as a measure of service uptime
-healthcheck:
-  url: https://hc-ping.com/1234567890
-  expression: "*/10 * * * *"
+```json
+{
+  "services": [
+    {
+      "service": "vg.no",
+      "expression": "* * * * *",
+      "url": "https://www.vg.no",
+      "okStatusCode": 200
+    },
+    {
+      "service": "nas",
+      "expression": "* * * * *",
+      "url": "http://192.168.1.200:5000",
+      "okStatusCode": 200
+    },
+    {
+      "service": "Home Assistant",
+      "expression": "*/10 * * * *",
+      "url": "http://192.168.1.89:4357",
+      "okStatusCode": 200
+    },
+    {
+      "service": "Nginx",
+      "expression": "* * * * *",
+      "url": "http://macbook-server:80",
+      "okStatusCode": 301
+    }
+  ],
+  "healthcheck": {
+    "url": "https://hc-ping.com/1234567890",
+    "expression": "*/10 * * * *"
+  }
+}
 ```
+
+The `healthcheck` property is optional. Skipping it will make this tool function just as a uptime checker.
 
 ## docker
 
-Assuming you have saved your config in `./config/config.yaml`, run this command:
+Assuming you have saved your config in `./config/config.json`, run this command:
 
 ```sh
 docker run -v ./config:/config -p 3000:3000 bendiksolheim/monitor:latest

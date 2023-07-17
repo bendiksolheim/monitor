@@ -1,4 +1,3 @@
-import yaml from "js-yaml";
 import fs from "fs";
 import path from "path";
 import { Job } from "./scheduler.server";
@@ -19,9 +18,9 @@ function getConfig(): Config {
   try {
     const cwd = path.resolve();
     const config = isDev
-      ? path.join(cwd, "config", "config.yml")
-      : path.join("/config", "config.yml");
-    const doc: Config = yaml.load(fs.readFileSync(config, "utf-8")) as Config;
+      ? path.join(cwd, "config", "config.json")
+      : path.join("/config", "config.json");
+    const doc: Config = JSON.parse(fs.readFileSync(config, "utf-8")) as Config;
     return doc;
   } catch (e) {
     console.error("Error parsing config file", e);
