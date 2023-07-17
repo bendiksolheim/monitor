@@ -2,8 +2,6 @@ import { createRequestHandler } from "@remix-run/express";
 import { installGlobals } from "@remix-run/node";
 import compression from "compression";
 import express from "express";
-import morgan from "morgan";
-// import * as build from "./build/index.js";
 import { getConfig } from "./config.js";
 import { schedule, scheduleFunction } from "./scheduler.server.js";
 import { removeOld } from "./app/db.server.js";
@@ -46,8 +44,6 @@ app.use(
 // Everything else (like favicon.ico) is cached for an hour. You may want to be
 // more aggressive with this caching.
 app.use(express.static("public", { maxAge: "1h" }));
-
-app.use(morgan("tiny"));
 
 const MODE = process.env.NODE_ENV;
 
