@@ -1,7 +1,7 @@
 {
   "name": "monitor",
   "type": "module",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,8 @@
     "migrate": "prisma migrate deploy",
     "dev": "remix dev -c \"ts-node --esm ./server.ts\"",
     "format": "prettier --write .",
-    "docker:build": "docker image build . -t bendiksolheim/monitor:latest -t bendiksolheim/monitor:2.0.1",
-    "docker:push": "docker push bendiksolheim/monitor:latest && docker push bendiksolheim/monitor:2.0.1"
+    "docker:build": "docker image build . -t bendiksolheim/monitor:latest -t bendiksolheim/monitor:2.0.2",
+    "docker:push": "docker push bendiksolheim/monitor:latest && docker push bendiksolheim/monitor:2.0.2"
   },
   "keywords": [],
   "author": "",
