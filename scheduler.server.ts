@@ -1,5 +1,6 @@
 import cron from "node-cron";
 import { insert } from "./app/db.server.ts";
+import { log } from "./log.js";
 
 export type Job = {
   service: string;
@@ -11,13 +12,13 @@ export type Job = {
 export function schedule(job: Job) {
   cron.schedule(job.expression, async () => {
     try {
-      console.log(`Checking ${job.service}`);
+      log(`Checking ${job.service}`);
       const start = Date.now();
       const response = await fetch(job.url, {
         signal: AbortSignal.timeout(10000),
         redirect: "manual",
       });
-      console.log(`Service ${job.service}: ${response.status}`);
+      log(`Service ${job.service}: ${response.status}`);
       const end = Date.now();
       const status = response.status === job.okStatusCode ? "OK" : "ERROR";
       insert({ service: job.service, status, latency: end - start });

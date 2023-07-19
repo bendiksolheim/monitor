@@ -36,9 +36,9 @@ function getConfig(): Config {
   } catch (e) {
     if (e instanceof ZodError) {
       const readableError = fromZodError(e);
-      console.log(readableError);
+      console.error(readableError);
     } else {
-      console.log("Error parsing config file", e);
+      console.error("Error parsing config file", e);
     }
     process.exit(1);
   }

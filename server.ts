@@ -6,6 +6,7 @@ import { getConfig } from "./config.js";
 import { schedule, scheduleFunction } from "./scheduler.server.js";
 import { removeOld } from "./app/db.server.js";
 import { configureHealthcheck } from "./healthcheck.js";
+import { log } from "./log.js";
 
 const build: any = await import("./build/index.js");
 
@@ -13,20 +14,20 @@ installGlobals();
 
 const config = getConfig();
 
-console.log("┌─────Services─────");
+log("┌─────Services─────");
 config.services.forEach((service) => {
-  console.log(`├─ ${service.service} (${service.expression})`);
+  log(`├─ ${service.service} (${service.expression})`);
   schedule(service);
 });
 
-console.log("│");
+log("│");
 
 // Remove old events every 10 minutes
 scheduleFunction(removeOld, "*/10 * * * *");
 
 configureHealthcheck();
 
-console.log("└──────────────────");
+log("└──────────────────");
 
 const app = express();
 
@@ -52,7 +53,7 @@ app.all("*", createRequestHandler({ build, mode: MODE }));
 const port = process.env.PORT || 3000;
 
 app.listen(port, async () => {
-  console.log(`\n✅ App ready: http://localhost:${port}`);
+  log(`✅ App ready: http://localhost:${port}`);
 
   if (process.env.NODE_ENV === "development") {
     const { broadcastDevReady } = await import("@remix-run/node");
