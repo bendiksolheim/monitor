@@ -1,5 +1,7 @@
 # monitor
 
+![Screenshot of status page](./screenshot.png)
+
 Every monitoring system I could find was way out of my league for a few services in a homelab environment, so I rolled my own.
 
 Checks the status of configured services at given intervals by making a request to an endpoint and checking the response status. The status is optionally reported to a service such as https://healthchecks.io so you can receive notifications when services are down.
