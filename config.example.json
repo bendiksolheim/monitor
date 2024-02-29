@@ -1,0 +1,10 @@
+{
+  "services": [
+    {
+      "service": "Monitor",
+      "expression": "* * * * *",
+      "url": "http://localhost:3000/health",
+      "okStatusCode": 200
+    }
+  ]
+}
