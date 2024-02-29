@@ -19,8 +19,10 @@ export function last<T>(array: Array<T>): T | null {
   }
 }
 
-export function range(size: number): Array<number> {
-  return [...Array(size).keys()];
+export function range(size: number, step: number = 1): Array<number> {
+  return [...Array(size).keys()]
+    .map((_, i) => i * step)
+    .filter((value) => value < size);
 }
 
 export function zip<T, U>(a: Array<T>, b: Array<U>): Array<[T, U]> {
