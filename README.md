@@ -45,7 +45,7 @@ Checks the status of configured services at given intervals by making a request 
 
 The `healthcheck` property is optional. Skipping it will make this tool function just as a uptime checker.
 
-## docker
+## Docker
 
 Assuming you have saved your config in `./config/config.json`, run this command:
 
@@ -54,3 +54,14 @@ docker run -v ./config:/config -p 3000:3000 bendiksolheim/monitor:latest
 ```
 
 See [docker-compose.yml](./docker-compose.yml) for a docker compose example.
+
+## Development
+
+```bash
+# Create an example configuration
+$ npm run create-config
+
+# Run server
+$ npm run dev
+```
+
