@@ -1,4 +1,4 @@
-import type { LinksFunction, V2_MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -6,10 +6,14 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  json,
+  useLoaderData,
 } from "@remix-run/react";
 import styles from "~/styles/styles.css";
+import { getLatestStatus } from "./db.server";
+import { Header } from "./components/header";
 
-export const meta: V2_MetaFunction = () => [
+export const meta: MetaFunction = () => [
   {
     charset: "utf-8",
     title: "Monitor",
@@ -21,13 +25,14 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-function Document({
-  children,
-  title,
-}: {
-  children: React.ReactNode;
-  title?: string;
-}): JSX.Element {
+export const loader = async () => {
+  const latestStatus = await getLatestStatus();
+  const operational = latestStatus.every((e) => e.status === "OK");
+  return json({ operational });
+};
+
+export default function App() {
+  const { operational } = useLoaderData<typeof loader>();
   return (
     <html lang="en">
       <head>
@@ -35,19 +40,12 @@ function Document({
         <Links />
       </head>
       <body>
-        {children}
+        <Header title="Monitor" operational={operational} />
+        <Outlet />
         <Scripts />
         <ScrollRestoration />
         {process.env.NODE_ENV === "development" && <LiveReload />}
       </body>
     </html>
-  );
-}
-
-export default function App() {
-  return (
-    <Document>
-      <Outlet />
-    </Document>
   );
 }

@@ -1,11 +1,11 @@
-import { max, range, zip } from "./util/arrays";
+import { max, range, zip } from "~/util/arrays";
 
 type Props = {
   values: Array<number | undefined>;
 };
 
 export function Sparkline(props: Props): JSX.Element {
-  const svgWidth = 750;
+  const svgWidth = 550;
   const svgHeight = 180;
   const graphWidth = 710;
   const graphHeight = 140;
