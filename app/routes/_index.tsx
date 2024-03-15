@@ -18,7 +18,6 @@ export const loader = async () => {
 
 export default function Index(): JSX.Element {
   const { serviceMap, latestStatus } = useLoaderData<typeof loader>();
-  const everythingOk = latestStatus.every((e) => e.status === "OK");
   const services = Object.keys(serviceMap);
   return (
     <div>

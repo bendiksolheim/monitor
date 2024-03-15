@@ -1,6 +1,6 @@
 :root {
-  --red: #ab4228;
-  --green: #50a775;
+  --color-red: #ab4228;
+  --color-green: #50a775;
 }
 
 body {
@@ -28,6 +28,19 @@ body {
 }
 
 .header__status {
+  content: "";
+  border-radius: 100%;
+  height: 10px;
+  margin-left: 20px;
+  width: 10px;
+}
+
+.header__status--ok {
+  background: var(--color-green);
+}
+
+.header__status--error {
+  background: var(--color-red);
 }
 
 .title {
@@ -86,9 +99,9 @@ body {
 }
 
 .pill__status--ok {
-  background: #50a775;
+  background: var(--color-green);
 }
 
 .pill__status--error {
-  background: #ab4228;
+  background: var(--color-red);
 }
