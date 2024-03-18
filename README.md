@@ -65,3 +65,8 @@ $ npm run create-config
 $ npm run dev
 ```
 
+## Wishlist
+
+- [] Separate page showing current configuration
+- [] Separate page for altering current configuration
+- [] Integragion with ntfy.sh
