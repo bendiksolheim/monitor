@@ -29,15 +29,15 @@ export function Sparkline(props: Props): JSX.Element {
     [[pairs[0]]]
   );
   const svgPaths = paths.flatMap((path) => {
-    if (path[0].y !== undefined) {
-      const p = path.map((p) => ({ x: p.x, y: p.y ?? 0 }));
-      return <OperationalPath key={path[0].x} path={p} height={graphHeight} />;
-    } else {
+    if (isNaN(path[0].y)) {
       const from = path[0].x - 1;
       const to = path[path.length - 1].x + 1;
       return (
         <ErrorPath key={path[0].x} from={from} to={to} height={graphHeight} />
       );
+    } else {
+      const p = path.map((p) => ({ x: p.x, y: p.y ?? 0 }));
+      return <OperationalPath key={path[0].x} path={p} height={graphHeight} />;
     }
   });
 
