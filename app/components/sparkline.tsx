@@ -5,10 +5,10 @@ type Props = {
 };
 
 export function Sparkline(props: Props): JSX.Element {
-  const svgWidth = 550;
-  const svgHeight = 180;
+  const svgWidth = 420;
+  const svgHeight = 150;
   const graphWidth = 710;
-  const graphHeight = 140;
+  const graphHeight = 120;
   const yValues = props.values;
   const xValues = range(graphWidth, graphWidth / yValues.length);
   const maxValue = max(yValues) ?? 0;

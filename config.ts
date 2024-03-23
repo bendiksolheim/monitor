@@ -17,12 +17,21 @@ const healthcheck = z.object({
   expression: z.string(),
 });
 
+const ntfy = z.object({
+  topic: z.string(),
+  expression: z.string(),
+});
+
 const schema = z.object({
   services: z.array(service),
   healthcheck: healthcheck.optional(),
+  ntfy: ntfy.optional(),
 });
 
-export type Config = z.infer<typeof schema>; // {
+export type Config = z.infer<typeof schema>;
+export type Service = z.infer<typeof service>;
+export type Healthcheck = z.infer<typeof healthcheck>;
+export type Ntfy = z.infer<typeof ntfy>;
 
 function getConfig(): Config {
   try {
