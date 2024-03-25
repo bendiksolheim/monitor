@@ -4,11 +4,12 @@ import compression from "compression";
 import express from "express";
 import { getConfig } from "./config.js";
 import { schedule, scheduleFunction } from "./scheduler.server.js";
-import { removeOld } from "./app/db.server.js";
+import { removeOld } from "../app/db.server.js";
 import { configureHealthcheck } from "./healthcheck.js";
 import { log } from "./log.js";
+import { configureNtfy } from "./ntfy.js";
 
-const build: any = await import("./build/index.js");
+const build: any = await import("../build/index.js");
 
 installGlobals();
 
@@ -26,6 +27,7 @@ log("│");
 scheduleFunction(removeOld, "*/10 * * * *");
 
 configureHealthcheck();
+configureNtfy();
 
 log("└──────────────────");
 

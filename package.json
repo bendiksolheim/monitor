@@ -7,9 +7,9 @@
   "scripts": {
     "build": "remix build",
     "start": "npm run migrate && npm run start:server",
-    "start:server": "cross-env NODE_ENV=production tsx ./server.ts",
+    "start:server": "cross-env NODE_ENV=production tsx ./server/server.ts",
     "migrate": "prisma migrate deploy",
-    "dev": "remix dev -c \"tsx ./server.ts\"",
+    "dev": "remix dev -c \"tsx ./server/server.ts\"",
     "format": "prettier --write .",
     "docker:build": "docker image build . -t bendiksolheim/monitor:latest -t bendiksolheim/monitor:3.1.0",
     "docker:push": "docker push bendiksolheim/monitor:latest && docker push bendiksolheim/monitor:3.1.0",

@@ -18,3 +18,9 @@ model Event {
   created DateTime @default(now())
   latency Int?
 }
+
+model Notification {
+  id Int @id @default(autoincrement())
+  timestamp DateTime @default(now())
+  message String
+}

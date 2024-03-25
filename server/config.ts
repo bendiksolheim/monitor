@@ -20,6 +20,7 @@ const healthcheck = z.object({
 const ntfy = z.object({
   topic: z.string(),
   expression: z.string(),
+  minutesBetween: z.number(),
 });
 
 const schema = z.object({

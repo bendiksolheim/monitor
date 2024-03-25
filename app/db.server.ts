@@ -1,4 +1,4 @@
-import { PrismaClient, Event } from "@prisma/client";
+import { PrismaClient, Event, Notification } from "@prisma/client";
 
 let prisma: PrismaClient;
 
@@ -38,6 +38,24 @@ export async function insert(event: Omit<Event, "id" | "created">) {
   return prisma.event.create({
     data: {
       ...event,
+    },
+  });
+}
+
+export async function insertNotification(
+  notification: Omit<Notification, "id" | "timestamp">
+) {
+  return prisma.notification.create({
+    data: {
+      ...notification,
+    },
+  });
+}
+
+export async function getLatestNotification(): Promise<Notification | null> {
+  return prisma.notification.findFirst({
+    orderBy: {
+      timestamp: "desc",
     },
   });
 }

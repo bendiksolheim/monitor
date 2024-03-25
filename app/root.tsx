@@ -27,7 +27,7 @@ import {
   useLoaderData,
   useLocation,
 } from "@remix-run/react";
-import { IconHeart, IconSettings } from "@tabler/icons-react";
+import { IconHeartbeat, IconSettings } from "@tabler/icons-react";
 import custom from "~/styles/custom.css";
 import { getLatestStatus } from "./db.server";
 
@@ -106,7 +106,7 @@ export default function App() {
                   ) : (
                     <Link to="/">
                       <ActionIcon variant="transparent" color="gray" size="lg">
-                        <IconHeart />
+                        <IconHeartbeat />
                       </ActionIcon>
                     </Link>
                   )}

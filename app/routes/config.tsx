@@ -3,14 +3,13 @@ import {
   Code,
   Container,
   List,
-  Paper,
   Stack,
   Tabs,
   Text,
   Title,
 } from "@mantine/core";
 import { json, useLoaderData } from "@remix-run/react";
-import { Config, Service, getConfig } from "config";
+import { Config, Service, getConfig } from "~/../server/config";
 
 export const loader = async () => {
   const config = getConfig();

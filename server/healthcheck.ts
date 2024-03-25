@@ -1,6 +1,6 @@
 import { scheduleFunction } from "./scheduler.server.js";
 import { getConfig } from "./config.js";
-import { getLatestStatus } from "./app/db.server.js";
+import { getLatestStatus } from "../app/db.server.js";
 import { log } from "./log.js";
 
 export function configureHealthcheck() {

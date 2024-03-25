@@ -1,5 +1,5 @@
 import cron from "node-cron";
-import { insert } from "./app/db.server.ts";
+import { insert } from "../app/db.server.ts";
 import { log } from "./log.js";
 
 export type Job = {
