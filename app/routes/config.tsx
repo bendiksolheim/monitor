@@ -83,15 +83,21 @@ function Pretty(props: { config: Config }): JSX.Element {
           <List listStyleType="none">
             <List.Item>
               <Text fw={700} span>
-                Topic
+                Topic:
               </Text>{" "}
               {config.ntfy.topic}
             </List.Item>
             <List.Item>
               <Text fw={700} span>
-                Expression
+                Expression:
               </Text>{" "}
               {config.ntfy.expression}
+            </List.Item>
+            <List.Item>
+              <Text fw={700} span>
+                Minutes between:
+              </Text>{" "}
+              {config.ntfy.minutesBetween}
             </List.Item>
           </List>
         </Card>
