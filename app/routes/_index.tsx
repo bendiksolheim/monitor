@@ -4,6 +4,7 @@ import { useLoaderData } from "@remix-run/react";
 import { group } from "~/util/arrays";
 import { Event } from "@prisma/client";
 import { Service } from "~/components/service";
+import { Container, Group, Stack } from "@mantine/core";
 
 export const loader = async () => {
   const events = await getEvents();
@@ -20,8 +21,8 @@ export default function Index(): JSX.Element {
   const { serviceMap, latestStatus } = useLoaderData<typeof loader>();
   const services = Object.keys(serviceMap);
   return (
-    <div>
-      <ul className="services">
+    <Container>
+      <Group>
         {services.map((service) => {
           // TODO: Why do I need to cast this?
           const events: Array<Event> = serviceMap[
@@ -29,7 +30,7 @@ export default function Index(): JSX.Element {
           ] as unknown as Array<Event>;
           return <Service key={service} events={events} />;
         })}
-      </ul>
-    </div>
+      </Group>
+    </Container>
   );
 }

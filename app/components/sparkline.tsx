@@ -5,10 +5,10 @@ type Props = {
 };
 
 export function Sparkline(props: Props): JSX.Element {
-  const svgWidth = 550;
-  const svgHeight = 180;
+  const svgWidth = 420;
+  const svgHeight = 150;
   const graphWidth = 710;
-  const graphHeight = 140;
+  const graphHeight = 120;
   const yValues = props.values;
   const xValues = range(graphWidth, graphWidth / yValues.length);
   const maxValue = max(yValues) ?? 0;
@@ -44,6 +44,17 @@ export function Sparkline(props: Props): JSX.Element {
   const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
   return (
     <svg height={`${svgHeight}px`} width={`${svgWidth}px`} viewBox={viewBox}>
+      <defs>
+        <linearGradient id="sparkline-bg" gradientTransform="rotate(90)">
+          <stop offset="0%" stopColor="var(--mantine-color-green-3)" />
+          <stop offset="50%" stopColor="var(--mantine-color-green-3)" />
+          <stop
+            offset="100%"
+            stopColor="var(--mantine-color-green-3)"
+            stopOpacity={0}
+          />
+        </linearGradient>
+      </defs>
       <g x="0" y="0" transform="translate(40, 20)">
         {svgPaths}
         <YAxis height={graphHeight} />
@@ -149,11 +160,11 @@ function OperationalPath(props: {
   } L ${values[0][0]} ${props.height} Z`;
   return (
     <>
-      <path d={path} fill="lightgreen" />
+      <path d={path} fill="url(#sparkline-bg)" />
       <path
         d={`${pathStart} ${pathLine}`}
-        stroke="green"
-        strokeWidth="1"
+        stroke="var(--mantine-color-green-7)"
+        strokeWidth="1.5"
         fill="transparent"
       />
     </>
