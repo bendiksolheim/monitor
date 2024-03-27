@@ -24,9 +24,12 @@ export function configureNtfy() {
       }
 
       const latestNotification = await getLatestNotification();
+      const latestNotificationTimestamp = (
+        latestNotification?.timestamp ?? new Date(0)
+      ).getTime();
       const minutesSinceLastNotification =
-        (latestNotification?.timestamp ?? new Date(0)).getTime() / (1000 * 60);
-      if (minutesSinceLastNotification < minutesBetween) {
+        (Date.now() - latestNotificationTimestamp) / (1000 * 60);
+      if (minutesSinceLastNotification > minutesBetween) {
         const message = `${numberDown} service${
           numberDown > 1 ? "s" : ""
         } down`;
@@ -42,7 +45,9 @@ export function configureNtfy() {
           },
         });
       } else {
-        log("Ntfy: too short since last notification, skipping");
+        log(
+          `Ntfy: ${minutesSinceLastNotification} minutes since last notification, waiting until ${minutesBetween}`
+        );
       }
     }, expression);
   }
