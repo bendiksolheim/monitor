@@ -1,8 +1,10 @@
 import {
   ActionIcon,
+  Anchor,
   AppShell,
   Avatar,
   Badge,
+  Button,
   Center,
   ColorSchemeScript,
   Group,
@@ -27,11 +29,12 @@ import {
   useLoaderData,
   useLocation,
 } from "@remix-run/react";
-import { IconHeartbeat, IconSettings } from "@tabler/icons-react";
+import { IconHeartbeat, IconSettings, IconDatabase } from "@tabler/icons-react";
 import custom from "~/styles/custom.css";
-import { getLatestStatus } from "./db.server";
+import events from "~/events";
 
 const theme = createTheme({
+  primaryColor: "cyan",
   fontFamily: "system-ui, sans-serif",
 });
 
@@ -51,15 +54,34 @@ export const links: LinksFunction = () => {
 };
 
 export const loader = async () => {
-  const latestStatus = await getLatestStatus();
+  const latestStatus = await events.latestStatus();
   const numberDown = latestStatus.filter((e) => e.status !== "OK").length;
   const operational = numberDown === 0;
   return json({ numberDown, operational });
 };
 
+const menu = [
+  { link: "/", label: "Services", icon: () => <IconHeartbeat /> },
+  { link: "/nodes", label: "Nodes", icon: () => <IconDatabase /> },
+  { link: "/config", label: "Config", icon: () => <IconSettings /> },
+];
+
 export default function App() {
   const { operational, numberDown } = useLoaderData<typeof loader>();
   const location = useLocation();
+  console.log(location.pathname);
+
+  const links = menu.map((link) => (
+    <Button
+      component={Link}
+      to={link.link}
+      key={link.link}
+      variant={link.link === location.pathname ? "filled" : "transparent"}
+      leftSection={link.icon()}
+    >
+      {link.label}
+    </Button>
+  ));
   return (
     <html lang="en">
       <head>
@@ -96,21 +118,7 @@ export default function App() {
                         } down`}
                   </Badge>
                 </Center>
-                <Group justify="flex-end">
-                  {location.pathname == "/" ? (
-                    <Link to="/config">
-                      <ActionIcon variant="transparent" color="gray" size="lg">
-                        <IconSettings />
-                      </ActionIcon>
-                    </Link>
-                  ) : (
-                    <Link to="/">
-                      <ActionIcon variant="transparent" color="gray" size="lg">
-                        <IconHeartbeat />
-                      </ActionIcon>
-                    </Link>
-                  )}
-                </Group>
+                <Group justify="flex-end">{links}</Group>
               </SimpleGrid>
             </AppShell.Header>
             <AppShell.Main>

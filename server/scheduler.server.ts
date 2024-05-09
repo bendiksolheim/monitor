@@ -1,6 +1,6 @@
 import cron from "node-cron";
-import { insert } from "../app/db.server.ts";
 import { log } from "./log.js";
+import events from "~/events";
 
 export type Job = {
   service: string;
@@ -21,10 +21,14 @@ export function schedule(job: Job) {
       log(`Service ${job.service}: ${response.status}`);
       const end = Date.now();
       const status = response.status === job.okStatusCode ? "OK" : "ERROR";
-      insert({ service: job.service, status, latency: end - start });
+      events.create({ service: job.service, status, latency: end - start });
     } catch (e) {
       console.error("Exception during schedule:", e);
-      insert({ service: job.service, status: "ERROR", latency: null });
+      events.create({
+        service: job.service,
+        status: "ERROR",
+        latency: undefined,
+      });
     }
   });
 }

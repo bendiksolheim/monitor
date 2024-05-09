@@ -28,8 +28,8 @@ export function Sparkline(props: Props): JSX.Element {
     },
     [[pairs[0]]]
   );
-  const svgPaths = paths.flatMap((path) => {
-    if (isNaN(path[0].y)) {
+  const svgPaths = paths.flatMap((path: Point[]) => {
+    if (path[0].y === undefined || isNaN(path[0].y)) {
       const from = path[0].x - 1;
       const to = path[path.length - 1].x + 1;
       return (

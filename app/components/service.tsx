@@ -1,7 +1,7 @@
-import { Event } from "@prisma/client";
 import { last } from "~/util/arrays";
 import { Sparkline } from "./sparkline";
 import { Badge, Card } from "@mantine/core";
+import { type Event } from "~/events";
 
 export function Service(props: { events: Array<Event> }): JSX.Element {
   const { events } = props;

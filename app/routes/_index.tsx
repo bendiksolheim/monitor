@@ -1,24 +1,18 @@
 import { json } from "@remix-run/node";
-import { getEvents, getLatestStatus } from "../db.server";
 import { useLoaderData } from "@remix-run/react";
 import { group } from "~/util/arrays";
-import { Event } from "@prisma/client";
 import { Service } from "~/components/service";
-import { Container, Group, Stack } from "@mantine/core";
+import { Container, Group } from "@mantine/core";
+import events, { type Event } from "~/events";
 
 export const loader = async () => {
-  const events = await getEvents();
-  const serviceMap: Record<string, Array<Event>> = group(
-    events,
-    (event) => event.service
-  );
-  const latestStatus = await getLatestStatus();
+  const serviceMap = group(await events.all(), (event) => event.service);
 
-  return json({ serviceMap, latestStatus });
+  return json({ serviceMap });
 };
 
 export default function Index(): JSX.Element {
-  const { serviceMap, latestStatus } = useLoaderData<typeof loader>();
+  const { serviceMap } = useLoaderData<typeof loader>();
   const services = Object.keys(serviceMap);
   return (
     <Container>

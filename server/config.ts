@@ -25,6 +25,7 @@ const ntfy = z.object({
 
 const schema = z.object({
   services: z.array(service),
+  nodes: z.array(z.string()).optional(),
   healthcheck: healthcheck.optional(),
   ntfy: ntfy.optional(),
 });

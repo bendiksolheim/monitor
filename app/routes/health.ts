@@ -1,9 +1,9 @@
-import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { getLatestStatus } from "../db.server";
+import { json } from "@remix-run/node";
+import events from "~/events";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async () => {
   try {
-    const latestStatus = await getLatestStatus();
+    const latestStatus = await events.latestStatus();
     const operational = latestStatus.every((e) => e.status === "OK");
     if (operational) {
       return json(

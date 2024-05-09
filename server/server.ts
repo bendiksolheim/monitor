@@ -3,11 +3,12 @@ import { installGlobals } from "@remix-run/node";
 import compression from "compression";
 import express from "express";
 import { getConfig } from "./config.js";
-import { schedule, scheduleFunction } from "./scheduler.server.js";
-import { removeOld } from "../app/db.server.js";
+import { scheduleFunction } from "./scheduler.server.js";
+import events from "~/events";
 import { configureHealthcheck } from "./healthcheck.js";
 import { log } from "./log.js";
 import { configureNtfy } from "./ntfy.js";
+import { configureServices } from "./services.js";
 
 const build: any = await import("../build/index.js");
 
@@ -16,20 +17,30 @@ installGlobals();
 const config = getConfig();
 
 log("┌─────Services─────");
-config.services.forEach((service) => {
-  log(`├─ ${service.service} (${service.expression})`);
-  schedule(service);
-});
+configureServices(config.services);
 
 log("│");
-
-// Remove old events every 10 minutes
-scheduleFunction(removeOld, "*/10 * * * *");
 
 configureHealthcheck();
 configureNtfy();
 
 log("└──────────────────");
+
+// Remove old events every 10 minutes
+scheduleFunction(() => {
+  events.remove({
+    where: {
+      created: {
+        lt: oneDayAgo(),
+      },
+    },
+  });
+}, "*/10 * * * *");
+
+function oneDayAgo(): Date {
+  const now = Date.now();
+  return new Date(now - 24 * 60 * 60 * 1000);
+}
 
 const app = express();
 

@@ -1,6 +1,6 @@
 import { scheduleFunction } from "./scheduler.server.js";
 import { getConfig } from "./config.js";
-import { getLatestStatus } from "../app/db.server.js";
+import events from "~/events";
 import { log } from "./log.js";
 
 export function configureHealthcheck() {
@@ -12,7 +12,7 @@ export function configureHealthcheck() {
     log(`├─ Healthcheck activated (${expression})`);
     // Ping healthcheck every N minutes
     scheduleFunction(async () => {
-      const latestStatus = await getLatestStatus();
+      const latestStatus = await events.latestStatus();
       const everythingOk = latestStatus.every((e) => e.status === "OK");
       if (everythingOk) {
         log("Everything OK, pinging healthcheck");

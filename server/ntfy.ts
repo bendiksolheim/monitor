@@ -1,11 +1,8 @@
 import { scheduleFunction } from "./scheduler.server";
 import { getConfig } from "./config";
 import { log } from "./log";
-import {
-  getLatestNotification,
-  getLatestStatus,
-  insertNotification,
-} from "~/db.server";
+import events from "~/events";
+import notifications from "~/notifications";
 
 export function configureNtfy() {
   const config = getConfig();
@@ -16,14 +13,16 @@ export function configureNtfy() {
     const minutesBetween = config.ntfy.minutesBetween;
     log(`├─ Ntfy.sh activated (${expression})`);
     scheduleFunction(async () => {
-      const latestStatus = await getLatestStatus();
+      const latestStatus = await events.latestStatus();
       const numberDown = latestStatus.filter((e) => e.status !== "OK").length;
       if (numberDown === 0) {
         log("Ntfy: no services down");
         return;
       }
 
-      const latestNotification = await getLatestNotification();
+      const latestNotification = await notifications.single({
+        orderBy: { timestamp: "desc" },
+      });
       const latestNotificationTimestamp = (
         latestNotification?.timestamp ?? new Date(0)
       ).getTime();
@@ -34,7 +33,7 @@ export function configureNtfy() {
           numberDown > 1 ? "s" : ""
         } down`;
         log(`Ntfy: sending message [${message}]`);
-        insertNotification({ message });
+        notifications.create({ message });
 
         fetch(`https://ntfy.sh/${topic}`, {
           method: "POST",
