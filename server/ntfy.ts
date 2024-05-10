@@ -14,7 +14,7 @@ export function configureNtfy() {
     log(`├─ Ntfy.sh activated (${expression})`);
     scheduleFunction(async () => {
       const latestStatus = await events.latestStatus();
-      const numberDown = latestStatus.filter((e) => e.status !== "OK").length;
+      const numberDown = latestStatus.filter((e) => !e.ok).length;
       if (numberDown === 0) {
         log("Ntfy: no services down");
         return;
@@ -33,7 +33,7 @@ export function configureNtfy() {
           numberDown > 1 ? "s" : ""
         } down`;
         log(`Ntfy: sending message [${message}]`);
-        notifications.create({ message });
+        await notifications.create({ message });
 
         fetch(`https://ntfy.sh/${topic}`, {
           method: "POST",

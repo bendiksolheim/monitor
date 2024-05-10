@@ -20,13 +20,13 @@ export function schedule(job: Job) {
       });
       log(`Service ${job.service}: ${response.status}`);
       const end = Date.now();
-      const status = response.status === job.okStatusCode ? "OK" : "ERROR";
-      events.create({ service: job.service, status, latency: end - start });
+      const status = response.status === job.okStatusCode ? true : false;
+      events.create({ service: job.service, ok: status, latency: end - start });
     } catch (e) {
       console.error("Exception during schedule:", e);
       events.create({
         service: job.service,
-        status: "ERROR",
+        ok: false,
         latency: undefined,
       });
     }

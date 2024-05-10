@@ -5,7 +5,7 @@ import { type Event } from "~/events";
 
 export function Service(props: { events: Array<Event> }): JSX.Element {
   const { events } = props;
-  const operational = last(events)?.status === "OK";
+  const operational = last(events)?.ok;
   const latencies = events.map((event) => event.latency);
   return (
     <Card shadow="xs" withBorder p="md">

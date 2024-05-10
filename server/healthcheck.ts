@@ -13,7 +13,7 @@ export function configureHealthcheck() {
     // Ping healthcheck every N minutes
     scheduleFunction(async () => {
       const latestStatus = await events.latestStatus();
-      const everythingOk = latestStatus.every((e) => e.status === "OK");
+      const everythingOk = latestStatus.every((e) => e.ok);
       if (everythingOk) {
         log("Everything OK, pinging healthcheck");
         fetch(url);

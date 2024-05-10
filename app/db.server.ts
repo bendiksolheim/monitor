@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, type Event } from "@prisma/client";
 
 let _prisma: PrismaClient;
 
@@ -35,3 +35,5 @@ function getClient(): PrismaClient {
 export function prisma(): PrismaClient {
   return _prisma;
 }
+
+export type PrismaEvent = Event;

@@ -4,7 +4,7 @@ import events from "~/events";
 export const loader = async () => {
   try {
     const latestStatus = await events.latestStatus();
-    const operational = latestStatus.every((e) => e.status === "OK");
+    const operational = latestStatus.every((e) => e.ok);
     if (operational) {
       return json(
         {

@@ -1,9 +1,9 @@
-import { prisma } from "../db.server";
+import { prisma, PrismaEvent } from "../db.server";
 
 export type Event = {
   id: number;
   service: string;
-  status: string;
+  ok: boolean;
   created: Date;
   latency: number | undefined;
 };
@@ -15,11 +15,15 @@ const create = (ev: NewEvent): Promise<Event> =>
     .event.create({
       data: {
         service: ev.service,
-        status: ev.status,
+        status: ev.ok ? "OK" : "ERROR",
         latency: ev.latency ?? null,
       },
     })
-    .then((ev) => ({ ...ev, latency: ev.latency ?? undefined }));
+    .then((ev: PrismaEvent) => ({
+      ...ev,
+      ok: ev.status === "OK",
+      latency: ev.latency ?? undefined,
+    }));
 
 const all = (): Promise<Array<Event>> =>
   prisma()
@@ -28,6 +32,7 @@ const all = (): Promise<Array<Event>> =>
       events.map(
         (ev): Event => ({
           ...ev,
+          ok: ev.status === "OK",
           latency: ev.latency ?? undefined,
         })
       )
@@ -38,7 +43,7 @@ const remove = (
 ) => prisma().event.deleteMany(criteria);
 
 const latestStatus = (): Promise<Array<Event>> =>
-  prisma().$queryRaw`
+  prisma().$queryRaw<PrismaEvent>`
       select e.id, e.service, e.status, e.created
       from Event e
       inner join (
@@ -47,6 +52,12 @@ const latestStatus = (): Promise<Array<Event>> =>
         group by service
       ) as ee
       on e.service = ee.service and e.created = ee.max_created
-  `;
+`.then((events: Array<PrismaEvent>) =>
+    events.map((ev) => ({
+      ...ev,
+      ok: ev.status === "OK",
+      latency: ev.latency ?? undefined,
+    }))
+  );
 
 export default { create, all, remove, latestStatus };

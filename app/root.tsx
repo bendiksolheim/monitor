@@ -55,7 +55,8 @@ export const links: LinksFunction = () => {
 
 export const loader = async () => {
   const latestStatus = await events.latestStatus();
-  const numberDown = latestStatus.filter((e) => e.status !== "OK").length;
+  console.log(latestStatus.length);
+  const numberDown = latestStatus.filter((e) => !e.ok).length;
   const operational = numberDown === 0;
   return json({ numberDown, operational });
 };
@@ -69,7 +70,6 @@ const menu = [
 export default function App() {
   const { operational, numberDown } = useLoaderData<typeof loader>();
   const location = useLocation();
-  console.log(location.pathname);
 
   const links = menu.map((link) => (
     <Button
