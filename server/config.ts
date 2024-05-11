@@ -4,6 +4,7 @@ import path from "path";
 import { fromZodError } from "zod-validation-error";
 
 const isDev = process.env.NODE_ENV === "development";
+console.log("isDev", isDev);
 
 const service = z.object({
   service: z.string(),

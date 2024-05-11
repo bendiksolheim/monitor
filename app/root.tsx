@@ -1,6 +1,4 @@
 import {
-  ActionIcon,
-  Anchor,
   AppShell,
   Avatar,
   Badge,
@@ -20,7 +18,6 @@ import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
   Link,
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
@@ -30,7 +27,6 @@ import {
   useLocation,
 } from "@remix-run/react";
 import { IconHeartbeat, IconSettings, IconDatabase } from "@tabler/icons-react";
-import custom from "~/styles/custom.css";
 import events from "~/events";
 
 const theme = createTheme({
@@ -49,13 +45,11 @@ export const meta: MetaFunction = () => [
 export const links: LinksFunction = () => {
   return [
     ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
-    { rel: "stylesheet", href: custom },
   ];
 };
 
 export const loader = async () => {
   const latestStatus = await events.latestStatus();
-  console.log(latestStatus.length);
   const numberDown = latestStatus.filter((e) => !e.ok).length;
   const operational = numberDown === 0;
   return json({ numberDown, operational });
@@ -128,7 +122,6 @@ export default function App() {
           </AppShell>
           <Scripts />
           <ScrollRestoration />
-          {process.env.NODE_ENV === "development" && <LiveReload />}
         </MantineProvider>
       </body>
     </html>

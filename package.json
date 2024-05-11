@@ -7,9 +7,9 @@
   "scripts": {
     "build": "remix build",
     "start": "npm run migrate && npm run start:server",
-    "start:server": "cross-env NODE_ENV=production tsx ./server/server.ts",
+    "start:server": "cross-env NODE_ENV=production tsx ./server.ts",
     "migrate": "prisma migrate deploy",
-    "dev": "remix dev -c \"tsx ./server/server.ts\"",
+    "dev": "cross-env NODE_ENV=development npx tsx ./server.ts",
     "format": "prettier --write .",
     "docker:build": "docker image build . -t bendiksolheim/monitor:latest -t bendiksolheim/monitor:3.3.0",
     "docker:push": "docker push bendiksolheim/monitor:latest && docker push bendiksolheim/monitor:3.3.0",
@@ -25,9 +25,9 @@
     "@mantine/hooks": "^7.9.1",
     "@prisma/client": "^5.13.0",
     "@remix-run/css-bundle": "^2.9.1",
+    "@remix-run/express": "^2.9.2",
     "@remix-run/node": "^2.9.1",
     "@remix-run/react": "^2.9.1",
-    "@remix-run/serve": "^2.9.1",
     "@tabler/icons-react": "^3.3.0",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
@@ -35,6 +35,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "remix-typedjson": "^0.4.1",
+    "vite": "^5.2.11",
     "zod": "^3.23.8",
     "zod-validation-error": "^3.2.0"
   },
@@ -53,6 +54,7 @@
     "postcss-simple-vars": "^7.0.1",
     "prisma": "^5.13.0",
     "tsx": "^4.9.3",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vite-tsconfig-paths": "^4.3.2"
   }
 }
