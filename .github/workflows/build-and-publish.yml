@@ -2,7 +2,7 @@ name: Build and publish docker image
 
 on:
   release:
-    types: [published
+    types: [published]
 
 jobs:
   build:
@@ -59,7 +59,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ spets.meta.outputs.labels }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
