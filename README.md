@@ -13,32 +13,32 @@ Checks the status of configured services at given intervals by making a request 
   "services": [
     {
       "service": "vg.no",
-      "expression": "* * * * *",
+      "schedule": "every minute",
       "url": "https://www.vg.no",
       "okStatusCode": 200
     },
     {
       "service": "nas",
-      "expression": "* * * * *",
+      "schedule": "every minute",
       "url": "http://192.168.1.200:5000",
       "okStatusCode": 200
     },
     {
       "service": "Home Assistant",
-      "expression": "*/10 * * * *",
+      "schedule": "every 10 minutes",
       "url": "http://192.168.1.89:4357",
       "okStatusCode": 200
     },
     {
       "service": "Nginx",
-      "expression": "* * * * *",
+      "schedule": "every minute",
       "url": "http://macbook-server:80",
       "okStatusCode": 301
     }
   ],
   "healthcheck": {
     "url": "https://hc-ping.com/1234567890",
-    "expression": "*/10 * * * *"
+    "schedule": "every 10 minutes"
   }
 }
 ```

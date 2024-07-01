@@ -4,23 +4,22 @@ import path from "path";
 import { fromZodError } from "zod-validation-error";
 
 const isDev = process.env.NODE_ENV === "development";
-console.log("isDev", isDev);
 
 const service = z.object({
   service: z.string(),
-  expression: z.string(),
+  schedule: z.string(),
   url: z.string().url(),
   okStatusCode: z.number().int().positive().lte(599),
 });
 
 const healthcheck = z.object({
   url: z.string().url(),
-  expression: z.string(),
+  schedule: z.string(),
 });
 
 const ntfy = z.object({
   topic: z.string(),
-  expression: z.string(),
+  schedule: z.string(),
   minutesBetween: z.number(),
 });
 

@@ -2,9 +2,11 @@ import { createRequestHandler } from "@remix-run/express";
 import express from "express";
 import { getConfig } from "server/config.js";
 import { scheduleJobs } from "server/services.js";
+import { log } from "./server/log";
 
 const config = getConfig();
-scheduleJobs(config);
+const scheduler = scheduleJobs(config);
+scheduler.start();
 
 const viteDevServer =
   process.env.NODE_ENV === "production"
@@ -25,5 +27,5 @@ const build = viteDevServer
 app.all("*", createRequestHandler({ build }));
 
 app.listen(3000, () => {
-  console.log("App listening on http://localhost:3000");
+  log("App listening on http://localhost:3000");
 });

@@ -1,59 +1,57 @@
 import events from "~/events";
-import cron from "node-cron";
 import { Config, Service } from "./config";
 import { log } from "./log";
 import { oneDayAgo } from "~/util/dates";
 import notifications from "~/notifications";
+import { Job, Scheduler } from "./scheduler";
 
-export type Job = {
-  service: string;
-  expression: string;
-  url: string;
-  okStatusCode: number;
-};
-
-export function scheduleJobs(config: Config) {
-  const jobs = config.services
-    .map((service) => ({
-      expression: service.expression,
-      job: createJobFunction(service),
-    }))
+export function scheduleJobs(config: Config): Scheduler {
+  const jobs: Array<Job> = config.services
+    .map(createJob)
     .concat(cleanupJob(), healthCheck(config), ntfy(config));
-  _scheduleJobs(jobs);
+
+  return new Scheduler(jobs);
 }
 
-function _scheduleJobs(jobs: Array<{ expression: string; job: () => void }>) {
-  jobs.forEach((job) => cron.schedule(job.expression, job.job));
-}
-
-function createJobFunction(job: Job): () => void {
-  return async () => {
+function createJob(service: Service): Job {
+  const fn = async () => {
     try {
-      log(`Checking ${job.service}`);
+      log(`Checking ${service.service}`);
       const start = Date.now();
-      const response = await fetch(job.url, {
+      const response = await fetch(service.url, {
         signal: AbortSignal.timeout(10000),
         redirect: "manual",
       });
-      log(`Service ${job.service}: ${response.status}`);
       const end = Date.now();
-      const status = response.status === job.okStatusCode ? true : false;
-      events.create({ service: job.service, ok: status, latency: end - start });
+      const status = response.status === service.okStatusCode ? true : false;
+      const ev = {
+        service: service.service,
+        ok: status,
+        latency: end - start,
+      };
+      events.create(ev);
     } catch (e) {
-      console.error("Exception during schedule:", e);
-      events.create({
-        service: job.service,
+      const ev = {
+        service: service.service,
         ok: false,
         latency: undefined,
-      });
+      };
+      events.create(ev);
     }
+  };
+
+  return {
+    name: service.service,
+    fn: fn,
+    schedule: service.schedule,
   };
 }
 
-function cleanupJob(): { expression: string; job: () => void } {
+function cleanupJob(): Job {
   return {
-    expression: "*/10 * * * *",
-    job: () => {
+    name: "cleanup",
+    schedule: "every 10 minutes",
+    fn: () => {
       events.remove({
         where: {
           created: {
@@ -65,14 +63,16 @@ function cleanupJob(): { expression: string; job: () => void } {
   };
 }
 
-function healthCheck(config: Config): { expression: string; job: () => void } {
+function healthCheck(config: Config): Job {
   if (config.healthcheck) {
     const url = config.healthcheck.url;
     return {
-      expression: config.healthcheck.expression,
-      job: async () => {
+      name: "healthcheck",
+      schedule: config.healthcheck.schedule,
+      fn: async () => {
         const latestStatus = await events.latestStatus();
-        const everythingOk = latestStatus.every((e) => e.ok);
+
+        const everythingOk = latestStatus.every((e: any) => e.ok);
         if (everythingOk) {
           log("Everything OK, pinging healthcheck");
           fetch(url);
@@ -83,20 +83,23 @@ function healthCheck(config: Config): { expression: string; job: () => void } {
     };
   } else {
     return {
-      expression: "* * * * *",
-      job: () => {},
+      name: "healthcheck",
+      schedule: "every 10 minutes",
+      fn: () => {
+        log("Note: healthcheck is disabled");
+      },
     };
   }
 }
 
-function ntfy(config: Config): { expression: string; job: () => void } {
+function ntfy(config: Config): Job {
   if (config.ntfy) {
     const topic = config.ntfy.topic;
-    const expression = config.ntfy.expression;
     const minutesBetween = config.ntfy.minutesBetween;
     return {
-      expression: config.ntfy.expression,
-      job: async () => {
+      name: "ntfy",
+      schedule: config.ntfy.schedule,
+      fn: async () => {
         const latestStatus = await events.latestStatus();
         const numberDown = latestStatus.filter((e) => !e.ok).length;
         if (numberDown === 0) {
@@ -136,8 +139,9 @@ function ntfy(config: Config): { expression: string; job: () => void } {
     };
   } else {
     return {
-      expression: "* * * * *",
-      job: () => {},
+      name: "ntfy",
+      schedule: "every 1 hour",
+      fn: () => {},
     };
   }
 }

@@ -1,0 +1,27 @@
+name: Build Node.js from pull request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Node.js application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Clean install dependencies
+        run: npm clean-install
+
+      - name: Build
+        run: npm run build

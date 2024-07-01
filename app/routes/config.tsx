@@ -68,7 +68,7 @@ function Pretty(props: { config: Config }): JSX.Element {
               <Text fw={700} span>
                 Expression
               </Text>{" "}
-              {config.healthcheck.expression}
+              {config.healthcheck.schedule}
             </List.Item>
           </List>
         </Card>
@@ -91,7 +91,7 @@ function Pretty(props: { config: Config }): JSX.Element {
               <Text fw={700} span>
                 Expression:
               </Text>{" "}
-              {config.ntfy.expression}
+              {config.ntfy.schedule}
             </List.Item>
             <List.Item>
               <Text fw={700} span>
@@ -129,9 +129,9 @@ function ServiceConfig(props: { service: Service }): JSX.Element {
         </List.Item>
         <List.Item>
           <Text fw={700} span>
-            Expression:
+            Schedule:
           </Text>{" "}
-          {service.expression}
+          {service.schedule}
         </List.Item>
         <List.Item>
           <Text fw={700} span>

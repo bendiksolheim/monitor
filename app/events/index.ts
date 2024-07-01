@@ -1,14 +1,19 @@
+import { z } from "zod";
 import { prisma, PrismaEvent } from "../db.server";
 
-export type Event = {
-  id: number;
-  service: string;
-  ok: boolean;
-  created: Date;
-  latency: number | undefined;
-};
+export const event = z.object({
+  id: z.number(),
+  service: z.string(),
+  ok: z.boolean(),
+  created: z.date(),
+  latency: z.number().optional(),
+});
 
-type NewEvent = Omit<Event, "id" | "created">;
+export type Event = z.infer<typeof event>;
+
+export const newEvent = event.omit({ id: true, created: true });
+
+export type NewEvent = z.infer<typeof newEvent>;
 
 const create = (ev: NewEvent): Promise<Event> =>
   prisma()
@@ -43,7 +48,7 @@ const remove = (
 ) => prisma().event.deleteMany(criteria);
 
 const latestStatus = (): Promise<Array<Event>> =>
-  prisma().$queryRaw<PrismaEvent>`
+  prisma().$queryRaw<Array<PrismaEvent>>`
       select e.id, e.service, e.status, e.created
       from Event e
       inner join (
@@ -52,12 +57,14 @@ const latestStatus = (): Promise<Array<Event>> =>
         group by service
       ) as ee
       on e.service = ee.service and e.created = ee.max_created
-`.then((events: Array<PrismaEvent>) =>
-    events.map((ev) => ({
-      ...ev,
+`.then((events: Array<PrismaEvent>): Array<Event> => {
+    return events.map((ev) => ({
+      id: ev.id,
+      created: ev.created,
+      service: ev.service,
       ok: ev.status === "OK",
       latency: ev.latency ?? undefined,
-    }))
-  );
+    }));
+  });
 
 export default { create, all, remove, latestStatus };
