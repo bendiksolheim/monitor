@@ -35,7 +35,7 @@ jobs:
       attestations: write
       id-token: write
     env:
-      REGISTRY: ghcr.io
+      REGISTRY: index.docker.io
       IMAGE_NAME: ${{ github.repository }}
 
     steps:
