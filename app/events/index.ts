@@ -32,7 +32,7 @@ const create = (ev: NewEvent): Promise<Event> =>
 
 const get = (
   criteria: Parameters<ReturnType<typeof prisma>["event"]["findMany"]>[0]
-) =>
+): Promise<Array<Event>> =>
   prisma()
     .event.findMany(criteria)
     .then((events) =>
