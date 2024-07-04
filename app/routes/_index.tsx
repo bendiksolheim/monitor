@@ -1,9 +1,9 @@
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { useSearchParams } from "@remix-run/react";
 import { last } from "~/util/arrays";
-import { Service } from "~/components/service";
-import { Center, Container, Group } from "@mantine/core";
-import events from "~/events";
+import { Service, type ServiceStatus } from "~/components/service";
+import { Center, Container, Grid } from "@mantine/core";
+import events, { type Event } from "~/events";
 import { SegmentedControl } from "~/components/segmented-control";
 import { getConfig } from "../../server/config";
 
@@ -16,22 +16,30 @@ export const loader = async () => {
       const eventsForService = await events.get({
         where: { service: service },
       });
-      const ok = last(eventsForService)!.ok;
-      return { name: service, ok, events: eventsForService };
+      return {
+        name: service,
+        status: serviceStatus(last(eventsForService)),
+        events: eventsForService,
+      };
     })
   );
 
   return typedjson({ services });
 };
 
-const statuses = {
-  all: [true, false],
-  failing: [false],
+const statuses: Record<string, Array<ServiceStatus>> = {
+  all: ["ok", "failing", "unknown"],
+  failing: ["failing"],
+  unknown: ["unknown"],
 };
 
 export default function Index(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const { services } = useTypedLoaderData<typeof loader>();
+  console.log(
+    getShowParam(searchParams),
+    services.map((s) => statuses[getShowParam(searchParams)].includes(s.status))
+  );
   return (
     <Container>
       <Center>
@@ -39,6 +47,7 @@ export default function Index(): JSX.Element {
           data={[
             { value: "all", label: "All" },
             { value: "failing", label: "Failing" },
+            { value: "unknown", label: "Unknown" },
           ]}
           onChange={(value) => {
             searchParams.set("show", value);
@@ -47,20 +56,26 @@ export default function Index(): JSX.Element {
           mb="lg"
         />
       </Center>
-      <Group>
+      <Grid justify="flex-start" align="stretch">
         {services
           .filter((service) =>
-            statuses[getShowParam(searchParams)].includes(service.ok)
+            statuses[getShowParam(searchParams)].includes(service.status)
           )
           .map((service) => (
-            <Service key={service.name} events={service.events} />
+            <Grid.Col span={6} key={service.name} style={{ minHeight: 227 }}>
+              <Service
+                name={service.name}
+                status={service.status}
+                events={service.events}
+              />
+            </Grid.Col>
           ))}
-      </Group>
+      </Grid>
     </Container>
   );
 }
 
-const allowedShowValues = ["all", "failing"] as const;
+const allowedShowValues = ["all", "failing", "unknown"] as const;
 
 function getShowParam(
   searchParams: URLSearchParams
@@ -70,5 +85,15 @@ function getShowParam(
     return value as (typeof allowedShowValues)[number];
   } else {
     return "all";
+  }
+}
+
+function serviceStatus(ev: Event | null): ServiceStatus {
+  if (ev === null) {
+    return "unknown";
+  } else if (ev.ok) {
+    return "ok";
+  } else {
+    return "failing";
   }
 }
