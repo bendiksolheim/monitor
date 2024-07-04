@@ -1,18 +1,25 @@
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { useSearchParams } from "@remix-run/react";
-import { group, last } from "~/util/arrays";
+import { last } from "~/util/arrays";
 import { Service } from "~/components/service";
 import { Center, Container, Group } from "@mantine/core";
 import events from "~/events";
 import { SegmentedControl } from "~/components/segmented-control";
+import { getConfig } from "../../server/config";
 
 export const loader = async () => {
-  const serviceMap = group(await events.all(), (event) => event.service);
-  const services = Object.keys(serviceMap).map((service) => {
-    const events = serviceMap[service];
-    const ok = last(events)!.ok;
-    return { name: service, ok, events };
-  });
+  const wantedServices = getConfig()
+    .services.map((service) => service.service)
+    .toSorted();
+  const services = await Promise.all(
+    wantedServices.map(async (service) => {
+      const eventsForService = await events.get({
+        where: { service: service },
+      });
+      const ok = last(eventsForService)!.ok;
+      return { name: service, ok, events: eventsForService };
+    })
+  );
 
   return typedjson({ services });
 };
