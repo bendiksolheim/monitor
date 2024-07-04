@@ -30,6 +30,21 @@ const create = (ev: NewEvent): Promise<Event> =>
       latency: ev.latency ?? undefined,
     }));
 
+const get = (
+  criteria: Parameters<ReturnType<typeof prisma>["event"]["findMany"]>[0]
+) =>
+  prisma()
+    .event.findMany(criteria)
+    .then((events) =>
+      events.map(
+        (ev): Event => ({
+          ...ev,
+          ok: ev.status === "OK",
+          latency: ev.latency ?? undefined,
+        })
+      )
+    );
+
 const all = (): Promise<Array<Event>> =>
   prisma()
     .event.findMany()
@@ -67,4 +82,4 @@ const latestStatus = (): Promise<Array<Event>> =>
     }));
   });
 
-export default { create, all, remove, latestStatus };
+export default { create, get, all, remove, latestStatus };
