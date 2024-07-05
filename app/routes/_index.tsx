@@ -36,10 +36,6 @@ const statuses: Record<string, Array<ServiceStatus>> = {
 export default function Index(): JSX.Element {
   const [searchParams, setSearchParams] = useSearchParams();
   const { services } = useTypedLoaderData<typeof loader>();
-  console.log(
-    getShowParam(searchParams),
-    services.map((s) => statuses[getShowParam(searchParams)].includes(s.status))
-  );
   return (
     <Container>
       <Center>
