@@ -16,9 +16,12 @@ const viteDevServer =
       );
 
 const app = express();
-app.use(
-  viteDevServer ? viteDevServer.middlewares : express.static("build/client")
-);
+if (viteDevServer) {
+  app.use(viteDevServer.middlewares);
+} else {
+  app.use("/assets", express.static("build/client/assets"));
+}
+app.use(express.static("build/client"));
 
 const build = viteDevServer
   ? () => viteDevServer.ssrLoadModule("virtual:remix/server-build")

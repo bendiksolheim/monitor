@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "remix build",
+    "build": "remix vite:build",
     "start": "npm run migrate && npm run start:server",
     "start:server": "cross-env NODE_ENV=production tsx ./server.ts",
     "migrate": "prisma migrate deploy",
