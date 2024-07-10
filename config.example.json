@@ -2,7 +2,7 @@
   "services": [
     {
       "service": "Monitor",
-      "expression": "* * * * *",
+      "expression": "every 1 minutes",
       "url": "http://localhost:3000/health",
       "okStatusCode": 200
     }
