@@ -1,22 +1,23 @@
 {
-    "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
-    "compilerOptions": {
-        "lib": ["DOM", "DOM.Iterable", "ES2019", "ES2023.Array"],
-        "isolatedModules": true,
-        "esModuleInterop": true,
-        "jsx": "react-jsx",
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        "module": "esnext",
-        "target": "esnext",
-        "strict": true,
-        "allowJs": true,
-        "forceConsistentCasingInFileNames": true,
-        "allowImportingTsExtensions": true,
-        "baseUrl": ".",
-        "paths": {
-            "~/*": ["./app/*"]
-        },
-        "noEmit": true
-    }
+  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2019", "ES2023.Array"],
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "module": "esnext",
+    "target": "esnext",
+    "strict": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowImportingTsExtensions": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./app/*"]
+    },
+    "noEmit": true
+  }
 }
