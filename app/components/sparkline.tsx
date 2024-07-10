@@ -1,4 +1,5 @@
 import { max, range, zip } from "~/util/arrays";
+import { Svg } from "./svg";
 
 type Props = {
   values: Array<number | undefined>;
@@ -41,9 +42,8 @@ export function Sparkline(props: Props): JSX.Element {
     }
   });
 
-  const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
   return (
-    <svg height={`${svgHeight}px`} width={`${svgWidth}px`} viewBox={viewBox}>
+    <Svg>
       <defs>
         <linearGradient id="sparkline-bg" gradientTransform="rotate(90)">
           <stop offset="0%" stopColor="var(--mantine-color-green-3)" />
@@ -66,7 +66,7 @@ export function Sparkline(props: Props): JSX.Element {
         />
       </g>
       <YValues maxValue={maxValue} height={graphHeight} />
-    </svg>
+    </Svg>
   );
 }
 
