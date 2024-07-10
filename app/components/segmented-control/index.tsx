@@ -5,7 +5,7 @@ export const SegmentedControl = (
   props: Parameters<typeof MantineSegmentedControl>[0]
 ): JSX.Element => (
   <MantineSegmentedControl
-    radius="xl"
+    radius="sm"
     size="sm"
     color="cyan"
     classNames={classes}
