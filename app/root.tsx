@@ -27,6 +27,7 @@ import {
   useLocation,
 } from "@remix-run/react";
 import { IconHeartbeat, IconSettings, IconDatabase } from "@tabler/icons-react";
+import { Config, getConfig } from "server/config";
 import events from "~/events";
 
 const theme = createTheme({
@@ -48,21 +49,41 @@ export const links: LinksFunction = () => {
   ];
 };
 
+const menuItems = [
+  {
+    link: "/",
+    label: "Services",
+    enabled: () => true,
+  },
+  {
+    link: "/nodes",
+    label: "Nodes",
+    enabled: (config: Config) => (config.nodes?.length ?? 0) > 0,
+  },
+  {
+    link: "/config",
+    label: "Config",
+    enabled: () => true,
+  },
+];
+
 export const loader = async () => {
+  const config = getConfig();
+  const menu = menuItems.filter((item) => item.enabled(config));
   const latestStatus = await events.latestStatus();
   const numberDown = latestStatus.filter((e) => !e.ok).length;
   const operational = numberDown === 0;
-  return json({ numberDown, operational });
+  return json({ numberDown, operational, menu });
 };
 
-const menu = [
-  { link: "/", label: "Services", icon: () => <IconHeartbeat /> },
-  { link: "/nodes", label: "Nodes", icon: () => <IconDatabase /> },
-  { link: "/config", label: "Config", icon: () => <IconSettings /> },
-];
+const icons: Record<string, () => JSX.Element> = {
+  Services: () => <IconHeartbeat />,
+  Nodes: () => <IconDatabase />,
+  Config: () => <IconSettings />,
+};
 
 export default function App() {
-  const { operational, numberDown } = useLoaderData<typeof loader>();
+  const { operational, numberDown, menu } = useLoaderData<typeof loader>();
   const location = useLocation();
 
   const links = menu.map((link) => (
@@ -71,7 +92,7 @@ export default function App() {
       to={link.link}
       key={link.link}
       variant={link.link === location.pathname ? "filled" : "transparent"}
-      leftSection={link.icon()}
+      leftSection={icons[link.label]()}
     >
       {link.label}
     </Button>
