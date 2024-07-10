@@ -2,9 +2,7 @@
 
 ![Screenshot of status page](./screenshot.png)
 
-Every monitoring system I could find was way out of my league for a few services in a homelab environment, so I rolled my own.
-
-Checks the status of configured services at given intervals by making a request to an endpoint and checking the response status. The status is optionally reported to a service such as https://healthchecks.io so you can receive notifications when services are down.
+Monitor services in your home lab for free, without all the enterprise hassle. Define the services you want to monitor, and Monitor queries them by HTTP according to the specified interval. Optionally report to [Healthchecks.io](https://healthchecks.io) to get notified by email when something is wrong.
 
 ## Configuration
 
@@ -13,13 +11,13 @@ Checks the status of configured services at given intervals by making a request 
   "services": [
     {
       "service": "vg.no",
-      "schedule": "every minute",
+      "schedule": "every 1 minute",
       "url": "https://www.vg.no",
       "okStatusCode": 200
     },
     {
       "service": "nas",
-      "schedule": "every minute",
+      "schedule": "every 1 minute",
       "url": "http://192.168.1.200:5000",
       "okStatusCode": 200
     },
@@ -31,7 +29,7 @@ Checks the status of configured services at given intervals by making a request 
     },
     {
       "service": "Nginx",
-      "schedule": "every minute",
+      "schedule": "every 1 minute",
       "url": "http://macbook-server:80",
       "okStatusCode": 301
     }
@@ -45,9 +43,9 @@ Checks the status of configured services at given intervals by making a request 
 
 The `healthcheck` property is optional. Skipping it will make this tool function just as a uptime checker.
 
-## Docker
+## Run
 
-Assuming you have saved your config in `./config/config.json`, run this command:
+Runs as a docker container. Assuming you have saved your config in `./config/config.json`, run this command:
 
 ```sh
 docker run -v ./config:/config -p 3000:3000 bendiksolheim/monitor:latest
@@ -59,14 +57,11 @@ See [docker-compose.yml](./docker-compose.yml) for a docker compose example.
 
 ```bash
 # Create an example configuration
-$ npm run create-config
+npm run create-config
+
+# Generate some test data
+npm run generate-test-data
 
 # Run server
-$ npm run dev
+npm run dev
 ```
-
-## Wishlist
-
-- [] Separate page showing current configuration
-- [] Separate page for altering current configuration
-- [] Integragion with ntfy.sh
