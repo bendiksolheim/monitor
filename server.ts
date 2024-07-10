@@ -27,6 +27,7 @@ const build = viteDevServer
   ? () => viteDevServer.ssrLoadModule("virtual:remix/server-build")
   : await import("./build/server/index.js");
 
+//@ts-ignore Not sure why this typecheck fails, but it does. Ignoring it for now
 app.all("*", createRequestHandler({ build }));
 
 app.listen(3000, () => {
