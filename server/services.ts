@@ -1,14 +1,13 @@
 import events from "~/events";
 import { Config, Service } from "./config";
 import { log } from "./log";
-import { oneDayAgo } from "~/util/dates";
 import notifications from "~/notifications";
 import { Job, Scheduler } from "./scheduler";
 
 export function scheduleJobs(config: Config): Scheduler {
   const jobs: Array<Job> = config.services
     .map(createJob)
-    .concat(cleanupJob(), healthCheck(config), ntfy(config));
+    .concat(healthCheck(config), ntfy(config));
 
   return new Scheduler(jobs);
 }
@@ -44,22 +43,6 @@ function createJob(service: Service): Job {
     name: service.service,
     fn: fn,
     schedule: service.schedule,
-  };
-}
-
-function cleanupJob(): Job {
-  return {
-    name: "cleanup",
-    schedule: "every 10 minutes",
-    fn: () => {
-      events.remove({
-        where: {
-          created: {
-            lt: oneDayAgo(),
-          },
-        },
-      });
-    },
   };
 }
 
