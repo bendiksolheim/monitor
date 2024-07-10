@@ -1,11 +1,12 @@
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import { useSearchParams } from "@remix-run/react";
-import { last } from "~/util/arrays";
+import { group, last } from "~/util/arrays";
 import { Service, type ServiceStatus } from "~/components/service";
 import { Center, Container, Grid } from "@mantine/core";
 import events, { type Event } from "~/events";
 import { SegmentedControl } from "~/components/segmented-control";
 import { getConfig } from "../../server/config";
+import { oneDayAgo } from "~/util/dates";
 
 export const loader = async () => {
   const wantedServices = getConfig()
@@ -14,12 +15,17 @@ export const loader = async () => {
   const services = await Promise.all(
     wantedServices.map(async (service) => {
       const eventsForService = await events.get({
-        where: { service: service },
+        where: { service: service, created: { gte: getSince() } },
+        orderBy: { created: "asc" },
+      });
+      const eventsByHour = group(eventsForService, (event) => {
+        const timestamp = event.created;
+        return `${timestamp.getFullYear()}-${timestamp.getMonth()}-${timestamp.getDate()}-${timestamp.getHours()}`;
       });
       return {
         name: service,
         status: serviceStatus(last(eventsForService)),
-        events: eventsForService,
+        events: eventsByHour,
       };
     })
   );
@@ -58,7 +64,7 @@ export default function Index(): JSX.Element {
             statuses[getShowParam(searchParams)].includes(service.status)
           )
           .map((service) => (
-            <Grid.Col span={6} key={service.name} style={{ minHeight: 227 }}>
+            <Grid.Col span={6} key={service.name}>
               <Service
                 name={service.name}
                 status={service.status}
@@ -92,4 +98,14 @@ function serviceStatus(ev: Event | null): ServiceStatus {
   } else {
     return "failing";
   }
+}
+
+function getSince(): Date {
+  const since = oneDayAgo();
+  since.setHours(since.getHours() + 1);
+  since.setMinutes(0);
+  since.setSeconds(0);
+  since.setMilliseconds(0);
+
+  return since;
 }
