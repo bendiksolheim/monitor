@@ -1,8 +1,8 @@
 export function group<T>(
   array: Array<T>,
-  fn: (v: T) => string
-): Record<string, Array<T>> {
-  const initial: Record<string, Array<T>> = {};
+  fn: (v: T) => PropertyKey
+): Record<PropertyKey, Array<T>> {
+  const initial: Record<PropertyKey, Array<T>> = {};
   return array.reduce((groups, v) => {
     const group = fn(v);
     groups[group] = groups[group] ?? [];
