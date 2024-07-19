@@ -3,6 +3,7 @@ import { Config, Service } from "./config";
 import { log } from "./log";
 import notifications from "~/notifications";
 import { Job, Scheduler } from "./scheduler";
+import { formatNotificationMessage } from "./healthchecks/format-notification-message";
 
 export function scheduleJobs(config: Config): Scheduler {
   const jobs: Array<Job> = config.services
@@ -84,8 +85,8 @@ function ntfy(config: Config): Job {
       schedule: config.ntfy.schedule,
       fn: async () => {
         const latestStatus = await events.latestStatus();
-        const numberDown = latestStatus.filter((e) => !e.ok).length;
-        if (numberDown === 0) {
+        const message = formatNotificationMessage(latestStatus);
+        if (message === null) {
           log("Ntfy: no services down");
           return;
         }
@@ -98,10 +99,8 @@ function ntfy(config: Config): Job {
         ).getTime();
         const minutesSinceLastNotification =
           (Date.now() - latestNotificationTimestamp) / (1000 * 60);
+
         if (minutesSinceLastNotification > minutesBetween) {
-          const message = `${numberDown} service${
-            numberDown > 1 ? "s" : ""
-          } down`;
           log(`Ntfy: sending message [${message}]`);
           await notifications.create({ message });
 
