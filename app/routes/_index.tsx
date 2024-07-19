@@ -18,6 +18,16 @@ export const loader = async () => {
         where: { service: service, created: { gte: getSince() } },
         orderBy: { created: "asc" },
       });
+
+      const averageLatency = await events.aggregate({
+        _avg: {
+          latency: true,
+        },
+        where: {
+          service: service,
+        },
+      });
+
       const eventsByHour = group(eventsForService, (event) => {
         const timestamp = event.created;
         return `${timestamp.getFullYear()}-${timestamp.getMonth()}-${timestamp.getDate()}-${timestamp.getHours()}`;
@@ -26,6 +36,7 @@ export const loader = async () => {
         name: service,
         status: serviceStatus(last(eventsForService)),
         events: eventsByHour,
+        averageLatency: averageLatency._avg?.latency ?? null,
       };
     })
   );
@@ -69,6 +80,7 @@ export default function Index(): JSX.Element {
                 name={service.name}
                 status={service.status}
                 events={service.events}
+                averageLatency={service.averageLatency}
               />
             </Grid.Col>
           ))}

@@ -1,4 +1,4 @@
-import { Badge, Card, Group, Space } from "@mantine/core";
+import { Badge, Card, Group, Space, Text } from "@mantine/core";
 import { type Event } from "~/events";
 import { UptimeIndicator } from "./uptime-indicator";
 import { mapValues } from "~/util/record";
@@ -9,10 +9,11 @@ type ServiceProps = {
   name: string;
   events: Record<PropertyKey, Array<Event>>;
   status: ServiceStatus;
+  averageLatency: number | null;
 };
 
 export function Service(props: ServiceProps): JSX.Element {
-  const { name, events, status } = props;
+  const { name, events, status, averageLatency } = props;
   const allEvents: Array<Event> = Object.values(events).flat();
   const uptime = allEvents.filter((e) => e.ok).length / allEvents.length;
   const uptimePercentage = maxTwoDecimals(uptime * 100);
@@ -24,6 +25,12 @@ export function Service(props: ServiceProps): JSX.Element {
         </Badge>
         <div>{uptimePercentage}%</div>
       </Group>
+      {averageLatency && (
+        <Group justify="space-between">
+          <Text size="xs">Average latency</Text>
+          <Text size="xs">{Math.round(averageLatency)}ms</Text>
+        </Group>
+      )}
       <Space h="lg" />
       <Status events={events} name={name} />
     </Card>
