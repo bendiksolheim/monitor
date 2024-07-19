@@ -16,7 +16,8 @@
     "create-config": "mkdir -p config && cp config.example.json config/config.json",
     "generate-test-data": "cross-env NODE_ENV=development npx tsx test/generate-test-data.ts",
     "check-updates": "npx npm-check-updates",
-    "update-all": "npx npm-check-updates -u"
+    "update-all": "npx npm-check-updates -u",
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "",
@@ -58,6 +59,7 @@
     "prisma": "^5.13.0",
     "tsx": "^4.9.3",
     "typescript": "^5.4.5",
-    "vite-tsconfig-paths": "^4.3.2"
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^2.0.3"
   }
 }
