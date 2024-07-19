@@ -82,4 +82,8 @@ const latestStatus = (): Promise<Array<Event>> =>
     }));
   });
 
-export default { create, get, all, remove, latestStatus };
+const aggregate = (
+  criteria: Parameters<ReturnType<typeof prisma>["event"]["aggregate"]>[0]
+) => prisma().event.aggregate(criteria);
+
+export default { create, get, all, remove, latestStatus, aggregate };
