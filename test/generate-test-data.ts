@@ -1,7 +1,7 @@
 import { getConfig } from "../server/config";
 import { prisma } from "../app/db.server";
 
-const ONE_MINUTE = 60
+const ONE_MINUTE = 60;
 
 type Second = number;
 
@@ -18,14 +18,24 @@ services.forEach(async (service) => {
   const now: Second = Math.ceil(Date.now() / 1000);
   let oneDayAgo: Second = now - 86_400;
   while (oneDayAgo < now) {
-    await prisma().event.create({
-      data: {
-        status: "OK",
-        service: service,
-        latency: 100,
-        created: new Date(oneDayAgo * 1000),
-      },
-    });
+    if (Math.random() < 0.005) {
+      await prisma().event.create({
+        data: {
+          status: "ERROR",
+          service: service,
+          created: new Date(oneDayAgo * 1000),
+        },
+      });
+    } else {
+      await prisma().event.create({
+        data: {
+          status: "OK",
+          service: service,
+          latency: 50 + Math.random() * 500,
+          created: new Date(oneDayAgo * 1000),
+        },
+      });
+    }
     oneDayAgo = oneDayAgo + ONE_MINUTE;
   }
 });
