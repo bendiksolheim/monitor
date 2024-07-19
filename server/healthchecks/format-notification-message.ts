@@ -7,6 +7,8 @@ export function formatNotificationMessage(
   if (numberDown === 0) {
     return null;
   } else {
-    return `${numberDown} service${numberDown > 1 ? "s" : ""} down`;
+    const joinedNames = services.map((service) => service.service).join(", ");
+    const names = joinedNames.replace(/, (?!.*,)/g, " and ");
+    return `${numberDown} service${numberDown > 1 ? "s" : ""} down: ${names}`;
   }
 }
