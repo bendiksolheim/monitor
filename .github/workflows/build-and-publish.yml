@@ -45,6 +45,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create .env.production file
+        env:
+          TAG: ${{ steps.meta.outputs.tags }}
+        run: |
+          echo "Creating .env.production file"
+          touch .env.production
+          echo VITE_VERSION="$TAG" >> .env.production
+          echo "Contents"
+          cat .env.production
+
       - name: setup QEMU
         uses: docker/setup-qemu-action@v3
 
