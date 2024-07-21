@@ -2,7 +2,7 @@ FROM node:20
 #RUN apk add --no-cache openssl
 WORKDIR /usr/app
 COPY package*.json ./
-RUN npm install
+RUN npm clean-install
 COPY . .
 ADD .env.docker .env
 EXPOSE 3000
