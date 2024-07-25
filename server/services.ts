@@ -4,6 +4,7 @@ import { log } from "./log";
 import notifications from "~/notifications";
 import { Job, Scheduler } from "./scheduler";
 import { formatNotificationMessage } from "./healthchecks/format-notification-message";
+import services from "~/services.server";
 
 export function scheduleJobs(config: Config): Scheduler {
   const jobs: Array<Job> = config.services
@@ -54,8 +55,7 @@ function healthCheck(config: Config): Job {
       name: "healthcheck",
       schedule: config.healthcheck.schedule,
       fn: async () => {
-        const latestStatus = await events.latestStatus();
-
+        const latestStatus = await services.status();
         const everythingOk = latestStatus.every((e: any) => e.ok);
         if (everythingOk) {
           log("Everything OK, pinging healthcheck");
@@ -84,7 +84,7 @@ function ntfy(config: Config): Job {
       name: "ntfy",
       schedule: config.ntfy.schedule,
       fn: async () => {
-        const latestStatus = await events.latestStatus();
+        const latestStatus = await services.status();
         const message = formatNotificationMessage(latestStatus);
         if (message === null) {
           log("Ntfy: no services down");
