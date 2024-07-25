@@ -28,7 +28,7 @@ import {
 } from "@remix-run/react";
 import { IconHeartbeat, IconSettings, IconDatabase } from "@tabler/icons-react";
 import { Config, getConfig } from "server/config";
-import events from "~/events";
+import services from "./services.server";
 
 const theme = createTheme({
   primaryColor: "cyan",
@@ -70,7 +70,7 @@ const menuItems = [
 export const loader = async () => {
   const config = getConfig();
   const menu = menuItems.filter((item) => item.enabled(config));
-  const latestStatus = await events.latestStatus();
+  const latestStatus = await services.status();
   const numberDown = latestStatus.filter((e) => !e.ok).length;
   const operational = numberDown === 0;
   return json({ numberDown, operational, menu });
