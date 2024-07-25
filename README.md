@@ -1,6 +1,7 @@
 # monitor
 
-[![Build and publish docker image](https://github.com/bendiksolheim/monitor/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/bendiksolheim/monitor/actions/workflows/build-and-publish.yml)
+[![Build and publish docker image](https://github.com/bendiksolheim/monitor/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/bendiksolheim/monitor/actions/workflows/build-and-publish.yml) [![Docker Image Version](https://img.shields.io/docker/v/bendiksolheim/monitor?sort=semver)](https://hub.docker.com/r/bendiksolheim/monitor)
+
 
 ![Screenshot of status page](./screenshot.png)
 
