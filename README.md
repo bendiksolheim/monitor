@@ -1,5 +1,7 @@
 # monitor
 
+[![Build and publish docker image](https://github.com/bendiksolheim/monitor/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/bendiksolheim/monitor/actions/workflows/build-and-publish.yml)
+
 ![Screenshot of status page](./screenshot.png)
 
 Monitor services in your home lab for free, without all the enterprise hassle. Define the services you want to monitor, and Monitor queries them by HTTP according to the specified interval. Optionally report to [Healthchecks.io](https://healthchecks.io) to get notified by email when something is wrong.
