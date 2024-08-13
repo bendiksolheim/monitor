@@ -29,6 +29,13 @@ test("three services down", () => {
   );
 });
 
+test("one down, one up", () => {
+  const events = randomEvents(2);
+  events[1].ok = true;
+  const message = formatNotificationMessage(events);
+  expect(message).toBe("1 service down: my-service-0");
+});
+
 function randomEvents(n: number): Array<Event> {
   return range(n).map((m) => {
     return {
