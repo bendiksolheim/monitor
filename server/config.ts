@@ -12,10 +12,13 @@ const service = z.object({
   okStatusCode: z.number().int().positive().lte(599),
 });
 
-const healthcheck = z.object({
-  url: z.string().url(),
+const healthchecksio = z.object({
+  type: z.literal("healthcheaks.io"),
+  uuid: z.string().uuid(),
   schedule: z.string(),
 });
+
+const heartbeats = z.discriminatedUnion("type", [healthchecksio]);
 
 const ntfy = z.object({
   topic: z.string(),
@@ -23,26 +26,27 @@ const ntfy = z.object({
   minutesBetween: z.number(),
 });
 
-const schema = z.object({
+const config = z.object({
   services: z.array(service),
+  heartbeat: heartbeats.optional(),
+  notify: z.array(ntfy).optional(),
   nodes: z.array(z.string()).optional(),
-  healthcheck: healthcheck.optional(),
-  ntfy: ntfy.optional(),
 });
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof config>;
 export type Service = z.infer<typeof service>;
-export type Healthcheck = z.infer<typeof healthcheck>;
+export type Heartbeat = z.infer<typeof heartbeats>;
 export type Ntfy = z.infer<typeof ntfy>;
+export type Healthchecksio = z.infer<typeof healthchecksio>
 
 function getConfig(): Config {
   try {
     const cwd = path.resolve();
-    const config = isDev
+    const configFile = isDev
       ? path.join(cwd, "config", "config.json")
       : path.join("/config", "config.json");
-    const json = JSON.parse(fs.readFileSync(config, "utf-8"));
-    const doc = schema.parse(json);
+    const json = JSON.parse(fs.readFileSync(configFile, "utf-8"));
+    const doc = config.parse(json);
     return doc;
   } catch (e) {
     if (e instanceof ZodError) {

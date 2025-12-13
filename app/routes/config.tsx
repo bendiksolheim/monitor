@@ -45,6 +45,7 @@ export default function ConfigView(): JSX.Element {
 
 function Pretty(props: { config: Config }): JSX.Element {
   const config = props.config;
+  const heartbeat = props.config.heartbeat;
 
   return (
     <>
@@ -55,20 +56,20 @@ function Pretty(props: { config: Config }): JSX.Element {
         ))}
       </Stack>
       <Title order={2}>Healthchecks.io</Title>
-      {config.healthcheck ? (
+      {config.heartbeat ? (
         <Card withBorder shadow="xs">
           <List listStyleType="none">
             <List.Item>
               <Text fw={700} span>
                 Url
               </Text>{" "}
-              {config.healthcheck.url}
+              {config.heartbeat.uuid}
             </List.Item>
             <List.Item>
               <Text fw={700} span>
                 Expression
               </Text>{" "}
-              {config.healthcheck.schedule}
+              {config.heartbeat.schedule}
             </List.Item>
           </List>
         </Card>
@@ -78,34 +79,30 @@ function Pretty(props: { config: Config }): JSX.Element {
         </Card>
       )}
       <Title order={2}>Ntfy.sh</Title>
-      {config.ntfy ? (
+      {(config.notify ?? []).map((notify) => (
         <Card withBorder shadow="xs">
           <List listStyleType="none">
             <List.Item>
               <Text fw={700} span>
                 Topic:
               </Text>{" "}
-              {config.ntfy.topic}
+              {notify.topic}
             </List.Item>
             <List.Item>
               <Text fw={700} span>
                 Expression:
               </Text>{" "}
-              {config.ntfy.schedule}
+              {notify.schedule}
             </List.Item>
             <List.Item>
               <Text fw={700} span>
                 Minutes between:
               </Text>{" "}
-              {config.ntfy.minutesBetween}
+              {notify.minutesBetween}
             </List.Item>
           </List>
         </Card>
-      ) : (
-        <Card withBorder shadow="xs">
-          Not configured
-        </Card>
-      )}
+      ))}
     </>
   );
 }
