@@ -1,6 +1,6 @@
 import { type Event } from "../app/events";
 import { expect, test } from "vitest";
-import { formatNotificationMessage } from "../server/healthchecks/format-notification-message";
+import { formatNotificationMessage } from "../server/format-notification-message";
 import { range } from "~/util/arrays";
 
 test("no services down", () => {

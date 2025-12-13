@@ -5,7 +5,7 @@
 
 ![Screenshot of status page](./screenshot.png)
 
-Monitor services in your home lab for free, without all the enterprise hassle. Define the services you want to monitor, and Monitor queries them by HTTP according to the specified interval. Optionally report to [Healthchecks.io](https://healthchecks.io) to get notified by email when something is wrong.
+Monitor services in your home lab for free, without all that enterprise hassle. Define services you want to monitor, and Monitor queries them over HTTP according to a specified interval. Report to one of more of the [supported external services](#) when something is wrong.
 
 ## Configuration
 

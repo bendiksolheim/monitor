@@ -1,17 +1,17 @@
 import events from "~/events";
-import { Config, Service } from "./config";
+import { Config, Heartbeat, Ntfy, Service } from "./config";
 import { log } from "./log";
 import notifications from "~/notifications";
 import { Job, Scheduler } from "./scheduler";
-import { formatNotificationMessage } from "./healthchecks/format-notification-message";
+import { formatNotificationMessage } from "./format-notification-message";
 import services from "~/services.server";
 
 export function scheduleJobs(config: Config): Scheduler {
-  const jobs: Array<Job> = config.services
-    .map(createJob)
-    .concat(healthCheck(config), ntfy(config));
+  const serviceJobs = config.services.map(createJob);
+  const heartbeat = [healthCheck(config.heartbeat)];
+  const notify = ntfy(config.notify);
 
-  return new Scheduler(jobs);
+  return new Scheduler([serviceJobs, heartbeat, notify].flat());
 }
 
 function createJob(service: Service): Job {
@@ -48,18 +48,19 @@ function createJob(service: Service): Job {
   };
 }
 
-function healthCheck(config: Config): Job {
-  if (config.healthcheck) {
-    const url = config.healthcheck.url;
+function healthCheck(heartbeat?: Heartbeat): Job {
+  if (heartbeat) {
+    const uuid = heartbeat.uuid;
+
     return {
       name: "healthcheck",
-      schedule: config.healthcheck.schedule,
+      schedule: heartbeat.schedule,
       fn: async () => {
         const latestStatus = await services.status();
         const everythingOk = latestStatus.every((e: any) => e.ok);
         if (everythingOk) {
           log("Everything OK, pinging healthcheck");
-          fetch(url);
+          fetch(`https://hc-ping.com/${uuid}`);
         } else {
           log("Some service is down, postponing healthcheck ping");
         }
@@ -76,54 +77,58 @@ function healthCheck(config: Config): Job {
   }
 }
 
-function ntfy(config: Config): Job {
-  if (config.ntfy) {
-    const topic = config.ntfy.topic;
-    const minutesBetween = config.ntfy.minutesBetween;
-    return {
-      name: "ntfy",
-      schedule: config.ntfy.schedule,
-      fn: async () => {
-        const latestStatus = await services.status();
-        const message = formatNotificationMessage(latestStatus);
-        if (message === null) {
-          log("Ntfy: no services down");
-          return;
-        }
+function ntfy(notify?: Array<Ntfy>): Array<Job> {
+  if (notify) {
+    return notify.map((notify) => {
+      const topic = notify.topic;
+      const minutesBetween = notify.minutesBetween;
+      return {
+        name: "ntfy",
+        schedule: notify.schedule,
+        fn: async () => {
+          const latestStatus = await services.status();
+          const message = formatNotificationMessage(latestStatus);
+          if (message === null) {
+            log("Ntfy: no services down");
+            return;
+          }
 
-        const latestNotification = await notifications.single({
-          orderBy: { timestamp: "desc" },
-        });
-        const latestNotificationTimestamp = (
-          latestNotification?.timestamp ?? new Date(0)
-        ).getTime();
-        const minutesSinceLastNotification =
-          (Date.now() - latestNotificationTimestamp) / (1000 * 60);
-
-        if (minutesSinceLastNotification > minutesBetween) {
-          log(`Ntfy: sending message [${message}]`);
-          await notifications.create({ message });
-
-          fetch(`https://ntfy.sh/${topic}`, {
-            method: "POST",
-            body: message,
-            headers: {
-              Title: "Service down",
-              Tags: "warning",
-            },
+          const latestNotification = await notifications.single({
+            orderBy: { timestamp: "desc" },
           });
-        } else {
-          log(
-            `Ntfy: ${minutesSinceLastNotification} minutes since last notification, waiting until ${minutesBetween}`
-          );
-        }
-      },
-    };
+          const latestNotificationTimestamp = (
+            latestNotification?.timestamp ?? new Date(0)
+          ).getTime();
+          const minutesSinceLastNotification =
+            (Date.now() - latestNotificationTimestamp) / (1000 * 60);
+
+          if (minutesSinceLastNotification > minutesBetween) {
+            log(`Ntfy: sending message [${message}]`);
+            await notifications.create({ message });
+
+            fetch(`https://ntfy.sh/${topic}`, {
+              method: "POST",
+              body: message,
+              headers: {
+                Title: "Service down",
+                Tags: "warning",
+              },
+            });
+          } else {
+            log(
+              `Ntfy: ${minutesSinceLastNotification} minutes since last notification, waiting until ${minutesBetween}`,
+            );
+          }
+        },
+      };
+    });
   } else {
-    return {
-      name: "ntfy",
-      schedule: "every 1 hour",
-      fn: () => {},
-    };
+    return [
+      {
+        name: "ntfy",
+        schedule: "every 1 hour",
+        fn: () => {},
+      },
+    ];
   }
 }
