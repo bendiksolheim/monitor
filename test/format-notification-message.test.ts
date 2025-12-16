@@ -1,6 +1,6 @@
-import { type Event } from "../app/events";
+import { type Event } from "~/lib/events.server";
 import { expect, test } from "vitest";
-import { formatNotificationMessage } from "../server/format-notification-message";
+import { formatNotificationMessage } from "../app/lib/format-notification-message";
 import { range } from "~/util/arrays";
 
 test("no services down", () => {
@@ -25,7 +25,7 @@ test("three services down", () => {
   const events = randomEvents(3);
   const message = formatNotificationMessage(events);
   expect(message).toBe(
-    "3 services down: my-service-0, my-service-1 and my-service-2"
+    "3 services down: my-service-0, my-service-1 and my-service-2",
   );
 });
 

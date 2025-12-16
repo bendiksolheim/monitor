@@ -56,15 +56,34 @@ docker run -v ./config:/config -p 3000:3000 bendiksolheim/monitor:latest
 
 See [docker-compose.yml](./docker-compose.yml) for a docker compose example.
 
+## Prerequisites
+
+- Node.js 20+
+- pnpm 9+ (install via `corepack enable` or see [pnpm installation](https://pnpm.io/installation))
+
 ## Development
 
-```bash
-# Create an example configuration
-npm run create-config
+1. Enable corepack (if not already enabled):
+   ```bash
+   corepack enable
+   ```
 
-# Generate some test data
-npm run generate-test-data
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
 
-# Run server
-npm run dev
-```
+3. Create an example configuration:
+   ```bash
+   pnpm run create-config
+   ```
+
+4. Generate some test data:
+   ```bash
+   pnpm run generate-test-data
+   ```
+
+5. Run development server:
+   ```bash
+   pnpm dev
+   ```

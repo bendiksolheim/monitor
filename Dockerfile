@@ -1,12 +1,24 @@
 FROM node:20
-#RUN apk add --no-cache openssl
+
+# Install pnpm via corepack
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
 WORKDIR /usr/app
-COPY package*.json ./
-RUN npm clean-install
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# Copy application
 COPY . .
 ADD .env.docker .env
+
 EXPOSE 3000
-RUN npx prisma generate
-RUN npm run build
-CMD ["npm", "run", "start"]
-#CMD ["/bin/sh", "-c", "sh"]
+
+# Generate Prisma client and build
+RUN pnpm exec prisma generate
+RUN pnpm run build
+
+CMD ["pnpm", "run", "start"]

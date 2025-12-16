@@ -1,6 +1,48 @@
+# Dependencies
 node_modules
-.log
+
+# Lock files (keep only pnpm-lock.yaml in git)
+package-lock.json
+yarn.lock
+
+# pnpm
+.pnpm-store/
+.pnpm-debug.log
+
+# Next.js
+.next
+out
+
+# Production
 build
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+.env
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Database
+data/
+*.db
+*.db-journal
+
+# Config
+config/config.json
 .cache
-config/**.*
-*.local
+.log
+.claude/settings.local.json

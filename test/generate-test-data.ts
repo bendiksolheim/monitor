@@ -1,5 +1,5 @@
 import { getConfig } from "../server/config";
-import { prisma } from "../app/db.server";
+import { prisma } from "../app/lib/db.server";
 
 const ONE_MINUTE = 60;
 

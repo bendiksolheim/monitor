@@ -1,7 +1,7 @@
 import { Badge, Card, Group, Space, Text } from "@mantine/core";
-import { type Event } from "~/events";
+import { type Event } from "../lib/events.server";
 import { UptimeIndicator } from "./uptime-indicator";
-import { mapValues } from "~/util/record";
+import { mapValues } from "../util/record";
 
 export type ServiceStatus = "ok" | "failing" | "unknown";
 
