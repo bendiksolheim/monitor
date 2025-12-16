@@ -1,3 +1,5 @@
+'use client';
+
 import { SegmentedControl as MantineSegmentedControl } from "@mantine/core";
 import classes from "./segmented-control.module.css";
 

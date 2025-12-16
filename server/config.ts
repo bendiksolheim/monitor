@@ -13,7 +13,7 @@ const service = z.object({
 });
 
 const healthchecksio = z.object({
-  type: z.literal("healthcheaks.io"),
+  type: z.literal("healthchecks.io"),
   uuid: z.string().uuid(),
   schedule: z.string(),
 });
