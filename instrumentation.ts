@@ -1,7 +1,9 @@
-import { logger } from "./server/log.ts";
+export const runtime = 'nodejs';
 
-export function register() {
+export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
+    const { logger } = await import("./server/log.ts");
+
     // Patch console methods to use custom logger
     // This will catch Next.js internal logging
     console.error = (msg, ...args) => {
