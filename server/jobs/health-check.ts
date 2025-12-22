@@ -12,7 +12,7 @@ const { service, url, okStatusCode } = workerData as WorkerData;
 
 (async () => {
   try {
-    logger.info(`Checking ${service}`);
+    logger.info(`Checking service: ${service}`);
     const start = Date.now();
 
     const response = await fetch(url, {

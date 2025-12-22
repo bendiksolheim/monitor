@@ -1,11 +1,12 @@
 import { max, range, zip } from "~/util/arrays";
 import { Svg } from "./svg";
+import { ReactNode } from "react";
 
 type Props = {
   values: Array<number | undefined>;
 };
 
-export function Sparkline(props: Props): JSX.Element {
+export function Sparkline(props: Props): ReactNode {
   const svgWidth = 420;
   const svgHeight = 150;
   const graphWidth = 710;
@@ -76,7 +77,7 @@ function YValues({
 }: {
   maxValue: number;
   height: number;
-}): JSX.Element {
+}): ReactNode {
   let heights = range(height, height / 5)
     .concat(height)
     .reverse()
@@ -103,7 +104,7 @@ function YValues({
   );
 }
 
-function YAxis({ height }: { height: number }): JSX.Element {
+function YAxis({ height }: { height: number }): ReactNode {
   return <path d={`M 0 0 L 0 ${height}`} stroke="black" strokeWidth={1} />;
 }
 
@@ -113,7 +114,7 @@ function XAxis({
 }: {
   width: number;
   height: number;
-}): JSX.Element {
+}): ReactNode {
   return (
     <path
       d={`M 0 ${height} L ${width} ${height}`}
@@ -130,7 +131,7 @@ function GridLines({
   maxValue: number;
   height: number;
   width: number;
-}): JSX.Element {
+}): ReactNode {
   let values = range(height, height / 5);
   return (
     <>
@@ -151,7 +152,7 @@ function GridLines({
 function OperationalPath(props: {
   path: Array<Point>;
   height: number;
-}): JSX.Element {
+}): ReactNode {
   const values = props.path.map((p) => [p.x, props.height - (p.y ?? 0)]);
   const pathStart = "M";
   const pathLine = values.map((value) => `${value[0]} ${value[1]}`).join(" L ");
@@ -175,7 +176,7 @@ function ErrorPath(props: {
   from: number;
   to: number;
   height: number;
-}): JSX.Element {
+}): ReactNode {
   const path = `M ${props.from} 0 L ${props.from} ${props.height} L ${props.to} ${props.height} L ${props.to} 0 Z`;
   return <path d={path} fill="pink" strokeWidth="1" />;
 }

@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { Svg } from "./svg";
 
 type Hour = number;
@@ -8,7 +9,7 @@ type UptimeIndicatorProps = {
   name: string;
 };
 
-export function UptimeIndicator(props: UptimeIndicatorProps): JSX.Element {
+export function UptimeIndicator(props: UptimeIndicatorProps): ReactNode {
   const squares = Object.entries(props.values).map((entry, i) => {
     const hour = entry[0];
     const events = entry[1];

@@ -13,14 +13,8 @@ const nextConfig = {
     optimizePackageImports: ["@mantine/core", "@mantine/hooks"],
   },
 
-  // Disable webpack build warnings for worker files
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      // Exclude job files from main bundle
-      config.externals = [...(config.externals || []), "bree"];
-    }
-    return config;
-  },
+  // Enable Turbopack (empty config to acknowledge migration from webpack)
+  turbopack: {},
 };
 
 export default nextConfig;

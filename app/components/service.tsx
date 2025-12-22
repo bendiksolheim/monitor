@@ -2,6 +2,7 @@ import { Badge, Card, Group, Space, Text } from "@mantine/core";
 import { type Event } from "../lib/events.server";
 import { UptimeIndicator } from "./uptime-indicator";
 import { mapValues } from "../util/record";
+import { ReactNode } from "react";
 
 export type ServiceStatus = "ok" | "failing" | "unknown";
 
@@ -12,7 +13,7 @@ type ServiceProps = {
   averageLatency: number | null;
 };
 
-export function Service(props: ServiceProps): JSX.Element {
+export function Service(props: ServiceProps): ReactNode {
   const { name, events, status, averageLatency } = props;
   const allEvents: Array<Event> = Object.values(events).flat();
   const uptime = allEvents.filter((e) => e.ok).length / allEvents.length;
@@ -40,7 +41,7 @@ export function Service(props: ServiceProps): JSX.Element {
 function Status(props: {
   events: Record<PropertyKey, Array<Event>>;
   name: string;
-}): JSX.Element {
+}): ReactNode {
   if (Object.keys(props.events).length === 0) {
     return <span>Ingen status enda</span>;
   } else {

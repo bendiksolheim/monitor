@@ -9,8 +9,9 @@ import {
   Title,
 } from "@mantine/core";
 import { getConfig, type Config, type Service } from "../../server/config";
+import { ReactNode } from "react";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function ConfigPage() {
   const config = getConfig();
@@ -39,7 +40,7 @@ export default async function ConfigPage() {
   );
 }
 
-function Pretty(props: { config: Config }): JSX.Element {
+function Pretty(props: { config: Config }): ReactNode {
   const config = props.config;
 
   return (
@@ -102,7 +103,7 @@ function Pretty(props: { config: Config }): JSX.Element {
   );
 }
 
-function ServiceConfig(props: { service: Service }): JSX.Element {
+function ServiceConfig(props: { service: Service }): ReactNode {
   const service = props.service;
   return (
     <Card withBorder shadow="xs">

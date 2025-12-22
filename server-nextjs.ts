@@ -40,6 +40,10 @@ app.prepare().then(async () => {
 
     // Log after response finishes
     res.on("finish", () => {
+      if (url?.includes("_next")) {
+        // Ignore Next.js internal requests
+        return;
+      }
       const duration = Date.now() - startTime;
       const statusCode = res.statusCode;
 

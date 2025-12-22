@@ -1,11 +1,13 @@
 import Bree from "bree";
 import path from "path";
-import { fileURLToPath } from "url";
 import { logger } from "./log";
 import type { Config } from "./config";
+import { tsPlugin } from "./ts-worker";
+import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+Bree.extend(tsPlugin);
 
 const isDev = process.env.NODE_ENV !== "production";
 
@@ -15,10 +17,11 @@ const jobsDir = isDev
   ? path.join(process.cwd(), "server", "jobs")
   : path.join(__dirname, "jobs");
 
-const fileExtension = isDev ? ".ts" : ".js";
+// const fileExtension = isDev ? "ts" : "js";
 
 // Use tsx to execute TypeScript files in development
-const execArgv = isDev ? ["--import", "tsx", "--trace-deprecation"] : [];
+// const execArgv = isDev ? ["--import", "tsx/esm"] : [];
+const execArgv = isDev ? ["--experimental-strip-types"] : [];
 
 export function createScheduler(config: Config): Bree {
   const jobs = [];
@@ -45,7 +48,7 @@ export function createScheduler(config: Config): Bree {
     jobs.push({
       name: "heartbeat",
       interval: config.heartbeat.schedule,
-      path: path.join(jobsDir, `heartbeat${fileExtension}`),
+      path: path.join(jobsDir, `heartbeat.ts`),
       worker: {
         execArgv,
         workerData: {
@@ -61,7 +64,7 @@ export function createScheduler(config: Config): Bree {
       jobs.push({
         name: `ntfy-${notify.topic}`,
         interval: notify.schedule,
-        path: path.join(jobsDir, `ntfy${fileExtension}`),
+        path: path.join(jobsDir, `ntfy.ts`),
         worker: {
           execArgv,
           workerData: {

@@ -1,6 +1,7 @@
+import { ReactNode } from "react";
 import { PropsWithChildren } from "react";
 
-export function Svg(props: PropsWithChildren<{}>): JSX.Element {
+export function Svg(props: PropsWithChildren<{}>): ReactNode {
   const svgWidth = 420;
   const svgHeight = 70;
   const viewBox = `0 0 ${svgWidth} ${svgHeight}`;
