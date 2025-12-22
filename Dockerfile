@@ -11,7 +11,7 @@ WORKDIR /usr/app
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --dangerously-allow-all-builds
+RUN pnpm install --frozen-lockfile
 
 # Copy application
 COPY . .
