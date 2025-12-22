@@ -6,6 +6,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "prisma generate",
     "build": "next build",
     "start": "pnpm run migrate && pnpm run start:server",
     "start:server": "cross-env NODE_ENV=production tsx ./server-nextjs.ts",
