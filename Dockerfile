@@ -11,6 +11,7 @@ WORKDIR /usr/app
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
+COPY prisma ./prisma
 RUN pnpm install --frozen-lockfile
 
 # Copy application
