@@ -1,19 +1,9 @@
 import { PrismaClient, type Event } from "@prisma/client";
 
-let _prisma: PrismaClient;
+let _prisma: PrismaClient | undefined;
 
 declare global {
-  var __db__: PrismaClient;
-}
-
-if (process.env.NODE_ENV === "production") {
-  _prisma = getClient();
-} else {
-  if (!global.__db__) {
-    global.__db__ = getClient();
-  }
-
-  _prisma = global.__db__;
+  var __db__: PrismaClient | undefined;
 }
 
 function getClient(): PrismaClient {
@@ -33,6 +23,19 @@ function getClient(): PrismaClient {
 }
 
 export function prisma(): PrismaClient {
+  if (_prisma) {
+    return _prisma;
+  }
+
+  if (process.env.NODE_ENV === "production") {
+    _prisma = getClient();
+  } else {
+    if (!global.__db__) {
+      global.__db__ = getClient();
+    }
+    _prisma = global.__db__;
+  }
+
   return _prisma;
 }
 
