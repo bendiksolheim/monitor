@@ -1,6 +1,5 @@
 'use client';
 
-import { Center } from '@mantine/core';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SegmentedControl } from './segmented-control';
 
@@ -9,22 +8,26 @@ interface SegmentedControlWrapperProps {
   defaultValue: string;
 }
 
-export function SegmentedControlWrapper({ data, defaultValue }: SegmentedControlWrapperProps) {
+export function SegmentedControlWrapper({
+  data,
+  defaultValue
+}: SegmentedControlWrapperProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const value = searchParams.get('show') || defaultValue;
+
+  const handleChange = (value: string) => {
+    const params = new URLSearchParams(searchParams?.toString());
+    params.set('show', value);
+    router.push(`?${params.toString()}`);
+  };
 
   return (
-    <Center mb="lg">
+    <div className="flex justify-center mb-4">
       <SegmentedControl
         data={data}
-        value={value}
-        onChange={(value) => {
-          const params = new URLSearchParams(searchParams);
-          params.set('show', value);
-          router.push(`/?${params.toString()}`);
-        }}
+        value={defaultValue}
+        onChange={handleChange}
       />
-    </Center>
+    </div>
   );
 }

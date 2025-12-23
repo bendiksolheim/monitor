@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+  /* Match current cyan primary color */
+  --color-primary: oklch(0.72 0.16 194.77); /* cyan-500 equivalent */
+
+  /* Match current font family */
+  --font-sans: system-ui, sans-serif;
+}
+
+/* DaisyUI corporate theme customization */
+[data-theme="corporate"] {
+  /* Theme is already configured, no custom overrides needed */
+}

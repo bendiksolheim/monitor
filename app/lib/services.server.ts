@@ -1,5 +1,5 @@
-import { getConfig } from "../../server/config";
-import events, { type Event } from "./events.server";
+import { getConfig } from "../../server/config.ts";
+import events, { type Event } from "./events.server.ts";
 
 async function status(): Promise<Array<Event>> {
   const config = getConfig();

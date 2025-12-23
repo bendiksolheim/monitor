@@ -1,4 +1,3 @@
-import { Container } from '@mantine/core';
 import { type ServiceStatus } from './components/service';
 import { SegmentedControlWrapper } from './components/segmented-control-wrapper';
 import { ServicesGrid } from './components/services-grid';
@@ -62,7 +61,7 @@ export default async function Page({
   );
 
   return (
-    <Container>
+    <div>
       <SegmentedControlWrapper
         data={[
           { value: 'all', label: 'All' },
@@ -72,7 +71,7 @@ export default async function Page({
         defaultValue={show}
       />
       <ServicesGrid services={filteredServices} />
-    </Container>
+    </div>
   );
 }
 

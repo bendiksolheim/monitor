@@ -1,6 +1,6 @@
 import { parentPort, workerData } from "worker_threads";
-import services from "../../app/lib/services.server";
-import { logger } from "../log";
+import services from "../../app/lib/services.server.ts";
+import { logger } from "../log.ts";
 
 interface WorkerData {
   uuid: string;

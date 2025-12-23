@@ -1,16 +1,10 @@
-import '@mantine/core/styles.css';
-import { MantineProvider, ColorSchemeScript, createTheme } from '@mantine/core';
+import './globals.css';
 import type { Metadata } from 'next';
 import { getConfig, type Config } from '../server/config';
 import services from './lib/services.server';
 import { AppShellWrapper } from './components/app-shell-wrapper';
 
 export const dynamic = 'force-dynamic';
-
-const theme = createTheme({
-  primaryColor: 'cyan',
-  fontFamily: 'system-ui, sans-serif',
-});
 
 export const metadata: Metadata = {
   title: 'Monitor',
@@ -39,7 +33,7 @@ async function getStatusInfo() {
   const config = getConfig();
   const menu = menuItems
     .filter((item) => item.enabled(config))
-    .map(({ link, label }) => ({ link, label })); // Only pass serializable data
+    .map(({ link, label }) => ({ link, label }));
   const latestStatus = await services.status();
   const numberDown = latestStatus.filter((e) => !e.ok).length;
   const operational = numberDown === 0;
@@ -54,21 +48,18 @@ export default async function RootLayout({
   const { operational, numberDown, menu } = await getStatusInfo();
 
   return (
-    <html lang="en">
+    <html lang="en" data-theme="corporate">
       <head>
-        <ColorSchemeScript />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        <MantineProvider theme={theme}>
-          <AppShellWrapper
-            operational={operational}
-            numberDown={numberDown}
-            menu={menu}
-          >
-            {children}
-          </AppShellWrapper>
-        </MantineProvider>
+        <AppShellWrapper
+          operational={operational}
+          numberDown={numberDown}
+          menu={menu}
+        >
+          {children}
+        </AppShellWrapper>
       </body>
     </html>
   );

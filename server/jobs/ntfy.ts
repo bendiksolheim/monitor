@@ -1,8 +1,8 @@
 import { parentPort, workerData } from "worker_threads";
-import services from "../../app/lib/services.server";
-import notifications from "../../app/lib/notifications.server";
-import { logger } from "../log";
-import { formatNotificationMessage } from "../../app/lib/format-notification-message";
+import services from "../../app/lib/services.server.ts";
+import notifications from "../../app/lib/notifications.server.ts";
+import { logger } from "../log.ts";
+import { formatNotificationMessage } from "../../app/lib/format-notification-message.ts";
 
 interface WorkerData {
   topic: string;

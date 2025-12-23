@@ -17,12 +17,6 @@ const jobsDir = isDev
   ? path.join(process.cwd(), "server", "jobs")
   : path.join(__dirname, "jobs");
 
-// const fileExtension = isDev ? "ts" : "js";
-
-// Use tsx to execute TypeScript files in development
-// const execArgv = isDev ? ["--import", "tsx/esm"] : [];
-const execArgv = isDev ? ["--experimental-strip-types"] : [];
-
 export function createScheduler(config: Config): Bree {
   const jobs = [];
 
@@ -33,7 +27,6 @@ export function createScheduler(config: Config): Bree {
       interval: service.schedule, // "every 5 minutes" works directly!
       path: path.join(jobsDir, `health-check.ts`),
       worker: {
-        execArgv,
         workerData: {
           service: service.service,
           url: service.url,
@@ -50,7 +43,6 @@ export function createScheduler(config: Config): Bree {
       interval: config.heartbeat.schedule,
       path: path.join(jobsDir, `heartbeat.ts`),
       worker: {
-        execArgv,
         workerData: {
           uuid: config.heartbeat.uuid,
         },
@@ -66,7 +58,6 @@ export function createScheduler(config: Config): Bree {
         interval: notify.schedule,
         path: path.join(jobsDir, `ntfy.ts`),
         worker: {
-          execArgv,
           workerData: {
             topic: notify.topic,
             minutesBetween: notify.minutesBetween,

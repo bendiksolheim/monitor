@@ -1,10 +1,11 @@
-import { Badge, Card, Group, Space, Text } from "@mantine/core";
-import { type Event } from "../lib/events.server";
-import { UptimeIndicator } from "./uptime-indicator";
-import { mapValues } from "../util/record";
-import { ReactNode } from "react";
+import { Badge } from '~/components/ui/badge';
+import { Card } from '~/components/ui/card';
+import { type Event } from '../lib/events.server';
+import { UptimeIndicator } from './uptime-indicator';
+import { mapValues } from '../util/record';
+import { ReactNode } from 'react';
 
-export type ServiceStatus = "ok" | "failing" | "unknown";
+export type ServiceStatus = 'ok' | 'failing' | 'unknown';
 
 type ServiceProps = {
   name: string;
@@ -18,22 +19,29 @@ export function Service(props: ServiceProps): ReactNode {
   const allEvents: Array<Event> = Object.values(events).flat();
   const uptime = allEvents.filter((e) => e.ok).length / allEvents.length;
   const uptimePercentage = maxTwoDecimals(uptime * 100);
+
   return (
-    <Card shadow="xs" withBorder p="md">
-      <Group justify="space-between">
-        <Badge variant="light" color={serviceStatusToColor(status)} size="md">
+    <Card shadow="xs" withBorder>
+      {/* Header: Badge and Uptime % */}
+      <div className="flex justify-between items-center mb-2">
+        <Badge variant={serviceStatusToVariant(status)} size="md">
           {name}
         </Badge>
-        <div>{uptimePercentage}%</div>
-      </Group>
+        <div className="text-sm font-medium">{uptimePercentage}%</div>
+      </div>
+
+      {/* Average Latency */}
       {averageLatency && (
-        <Group justify="space-between">
-          <Text size="xs">Average latency</Text>
-          <Text size="xs">{Math.round(averageLatency)}ms</Text>
-        </Group>
+        <div className="flex justify-between items-center text-xs text-base-content/70 mb-4">
+          <span>Average latency</span>
+          <span>{Math.round(averageLatency)}ms</span>
+        </div>
       )}
-      <Space h="lg" />
-      <Status events={events} name={name} />
+
+      {/* Uptime Indicator */}
+      <div className="mt-4">
+        <Status events={events} name={name} />
+      </div>
     </Card>
   );
 }
@@ -43,35 +51,26 @@ function Status(props: {
   name: string;
 }): ReactNode {
   if (Object.keys(props.events).length === 0) {
-    return <span>Ingen status enda</span>;
+    return <span className="text-sm text-base-content/50">Ingen status enda</span>;
   } else {
     const values = mapValues(props.events, (events) =>
       events.map((event) => event.ok)
     );
     return <UptimeIndicator values={values} name={props.name} />;
-    /* const latencies = props.events.map((event) => event.latency); */
-    /* return <Sparkline values={latencies} />; */
   }
 }
 
-function serviceStatusToColor(status: ServiceStatus): string {
+function serviceStatusToVariant(status: ServiceStatus): 'success' | 'error' | 'warning' {
   switch (status) {
-    case "ok":
-      return "green";
-    case "failing":
-      return "red";
-    case "unknown":
-      return "yellow";
+    case 'ok':
+      return 'success';
+    case 'failing':
+      return 'error';
+    case 'unknown':
+      return 'warning';
   }
 }
 
-/**
- * Weird hack to round numbers to at most 2 decimals.
- * 10 => 10
- * 10.1 => 10.1
- * 10.01 => 10.01
- * 10.005 => 10.01
- */
 function maxTwoDecimals(n: number): number {
   return +n.toFixed(2);
 }

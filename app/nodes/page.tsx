@@ -1,4 +1,4 @@
-import { Container, Title, Stack, Card, Text } from '@mantine/core';
+import { Card } from '~/components/ui/card';
 import { getConfig } from '../../server/config';
 import { z } from 'zod';
 
@@ -27,35 +27,29 @@ export default async function NodesPage() {
   );
 
   return (
-    <Container>
-      <Title order={2} mb="md">
-        Nodes
-      </Title>
-      <Stack gap="md">
+    <div>
+      <h2 className="text-2xl font-bold mb-4">Nodes</h2>
+      <div className="flex flex-col gap-4">
         {status.map((s) => (
-          <Card key={s.node} shadow="sm" padding="lg" radius="md" withBorder>
-            <Text fw={500} size="lg" mb="xs">
-              {s.node}
-            </Text>
+          <Card key={s.node} shadow="sm" withBorder>
+            <p className="text-lg font-medium mb-2">{s.node}</p>
             {s.status === 'success' ? (
-              <Stack gap="xs">
-                <Text size="sm">Hostname: {s.info.hostname}</Text>
-                <Text size="sm">CPU: {s.info.cpu.toFixed(1)}%</Text>
-                <Text size="sm">Memory: {s.info.memory.toFixed(1)}%</Text>
+              <div className="flex flex-col gap-1">
+                <p className="text-sm">Hostname: {s.info.hostname}</p>
+                <p className="text-sm">CPU: {s.info.cpu.toFixed(1)}%</p>
+                <p className="text-sm">Memory: {s.info.memory.toFixed(1)}%</p>
                 {s.info.temperature && (
-                  <Text size="sm">
+                  <p className="text-sm">
                     Temperature: {s.info.temperature.toFixed(1)}°C
-                  </Text>
+                  </p>
                 )}
-              </Stack>
+              </div>
             ) : (
-              <Text c="red" size="sm">
-                Failed to fetch status
-              </Text>
+              <p className="text-sm text-error">Failed to fetch status</p>
             )}
           </Card>
         ))}
-      </Stack>
-    </Container>
+      </div>
+    </div>
   );
 }

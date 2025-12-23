@@ -1,6 +1,5 @@
 'use client';
 
-import { Grid } from '@mantine/core';
 import { Service, type ServiceStatus } from './service';
 import { type Event } from '../lib/events.server';
 
@@ -17,17 +16,16 @@ interface ServicesGridProps {
 
 export function ServicesGrid({ services }: ServicesGridProps) {
   return (
-    <Grid justify="flex-start" align="stretch">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
       {services.map((service) => (
-        <Grid.Col span={6} key={service.name}>
-          <Service
-            name={service.name}
-            status={service.status}
-            events={service.events}
-            averageLatency={service.averageLatency}
-          />
-        </Grid.Col>
+        <Service
+          key={service.name}
+          name={service.name}
+          status={service.status}
+          events={service.events}
+          averageLatency={service.averageLatency}
+        />
       ))}
-    </Grid>
+    </div>
   );
 }
