@@ -31,16 +31,10 @@ export function UptimeIndicator(props: UptimeIndicatorProps): ReactNode {
           </title>
           <defs>
             <linearGradient id={id} x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="var(--mantine-color-red-5)" />
-              <stop
-                offset={`${failurePercentage}%`}
-                stopColor="var(--mantine-color-red-5)"
-              />
-              <stop
-                offset={`${failurePercentage}%`}
-                stopColor="var(--mantine-color-green-5)"
-              />
-              <stop offset="100%" stopColor="var(--mantine-color-green-5)" />
+              <stop offset="0%" stopColor="var(--color-error)" />
+              <stop offset={`${failurePercentage}%`} stopColor="var(--color-error)" />
+              <stop offset={`${failurePercentage}%`} stopColor="var(--color-success)" />
+              <stop offset="100%" stopColor="var(--color-success)" />
             </linearGradient>
           </defs>
           <rect
@@ -65,7 +59,7 @@ export function UptimeIndicator(props: UptimeIndicatorProps): ReactNode {
             x={i * (indicatorWidth + gap)}
             width={indicatorWidth}
             height={indicatorHeight}
-            fill="var(--mantine-color-green-5)"
+            fill="var(--color-success)"
             rx={indicatorWidth / 2}
           />
         </g>

@@ -1,15 +1,39 @@
 @import "tailwindcss";
-@plugin "daisyui";
-
-@theme {
-  /* Match current cyan primary color */
-  --color-primary: oklch(0.72 0.16 194.77); /* cyan-500 equivalent */
-
-  /* Match current font family */
-  --font-sans: system-ui, sans-serif;
+@plugin "daisyui" {
+    themes: false;
 }
 
-/* DaisyUI corporate theme customization */
-[data-theme="corporate"] {
-  /* Theme is already configured, no custom overrides needed */
+@plugin "daisyui/theme" {
+    name: "frappe";
+    default: true;
+    prefersdark: true;
+    color-scheme: "dark";
+    --color-base-100: #303446;
+    --color-base-200: #292c3c;
+    --color-base-300: #232634;
+    --color-base-content: #c6d0f5;
+    --color-primary: #babbf1;
+    --color-primary-content: #292c3c;
+    --color-secondary: #414559;
+    --color-secondary-content: #c6d0f5;
+    --color-accent: #f2d5cf;
+    --color-accent-content: #292c3c;
+    --color-neutral: #838ba7;
+    --color-neutral-content: #292c3c;
+    --color-info: #99d1db;
+    --color-info-content: #292c3c;
+    --color-success: #a6d189;
+    --color-success-content: #303446;
+    --color-warning: #e5c890;
+    --color-warning-content: #303446;
+    --color-error: #e78284;
+    --color-error-content: #303446;
+    --radius-selector: 0.25rem;
+    --radius-field: 0.5rem;
+    --radius-box: 0.5rem;
+    --size-selector: 0.25rem;
+    --size-field: 0.25rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
 }

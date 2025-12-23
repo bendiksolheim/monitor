@@ -22,7 +22,7 @@ export function AppShellWrapper({ children, operational, numberDown, menu }: App
   return (
     <div className="min-h-screen bg-base-200">
       {/* Navigation Bar */}
-      <nav className="navbar bg-base-100 border-b border-base-300/50 h-[52px] px-4 shadow-md">
+      <nav className="navbar bg-base-100 border-b border-base-300 h-13 px-4 shadow-sm">
         <div className="navbar-start">
           <div className="flex items-center gap-2">
             <span className="text-xl font-semibold">Monitor</span>
