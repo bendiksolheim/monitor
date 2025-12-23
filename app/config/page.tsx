@@ -10,7 +10,7 @@ export default async function ConfigPage() {
 
   return (
     <div>
-      <Card withBorder shadow="xs">
+      <Card shadow="xs">
         <h1 className="text-3xl font-bold mb-2">Configuration</h1>
         <p className="text-base mb-4">This is the current configuration from config.json</p>
 
@@ -52,7 +52,7 @@ function Pretty(props: { config: Config }): ReactNode {
 
       <Section title="Healthchecks.io">
         {config.heartbeat ? (
-          <Card withBorder shadow="xs">
+          <Card shadow="xs">
             <dl className="space-y-2">
               <div>
                 <dt className="font-bold inline">Url: </dt>
@@ -65,7 +65,7 @@ function Pretty(props: { config: Config }): ReactNode {
             </dl>
           </Card>
         ) : (
-          <Card withBorder shadow="xs">
+          <Card shadow="xs">
             <p className="text-base-content/70">Not configured</p>
           </Card>
         )}
@@ -73,7 +73,7 @@ function Pretty(props: { config: Config }): ReactNode {
 
       <Section title="Ntfy.sh">
         {(config.notify ?? []).map((notify) => (
-          <Card withBorder shadow="xs" key={notify.topic} className="mb-4">
+          <Card shadow="xs" key={notify.topic} className="mb-4">
             <dl className="space-y-2">
               <div>
                 <dt className="font-bold inline">Topic: </dt>
@@ -108,7 +108,7 @@ function ServiceConfig(props: { service: Service }): ReactNode {
   const service = props.service;
 
   return (
-    <Card withBorder shadow="xs">
+    <Card shadow="xs">
       <dl className="space-y-2">
         <div>
           <dt className="font-bold inline">Name: </dt>
