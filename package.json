@@ -34,6 +34,7 @@
     "picocolors": "^1.1.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
+    "recharts": "^3.6.0",
     "zod": "^3.25.76",
     "zod-validation-error": "^3.5.4"
   },

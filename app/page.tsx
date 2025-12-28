@@ -4,7 +4,7 @@ import { ServicesGrid } from './components/services-grid';
 import events, { type Event } from './lib/events.server';
 import { getConfig } from '../server/config';
 import { oneDayAgo } from './util/dates';
-import { group, last } from './util/arrays';
+import { last } from './util/arrays';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,15 +34,10 @@ export default async function Page({
         where: { service: service }
       });
 
-      const eventsByHour = group(eventsForService, (event) => {
-        const timestamp = event.created;
-        return `${timestamp.getFullYear()}-${timestamp.getMonth()}-${timestamp.getDate()}-${timestamp.getHours()}`;
-      });
-
       return {
         name: service,
         status: serviceStatus(last(eventsForService)),
-        events: eventsByHour,
+        events: eventsForService,  // Pass raw events directly
         averageLatency: averageLatency._avg?.latency ?? null
       };
     })

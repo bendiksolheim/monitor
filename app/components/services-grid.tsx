@@ -6,7 +6,7 @@ import { type Event } from '../lib/events.server';
 interface ServiceData {
   name: string;
   status: ServiceStatus;
-  events: Record<PropertyKey, Array<Event>>;
+  events: Array<Event>;
   averageLatency: number | null;
 }
 

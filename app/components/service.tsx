@@ -1,8 +1,7 @@
 import { Badge } from "~/components/ui/badge";
 import { Card } from "~/components/ui/card";
 import { type Event } from "../lib/events.server";
-import { UptimeIndicator } from "./uptime-indicator";
-import { mapValues } from "../util/record";
+import { UptimeChart } from "./uptime-chart";
 import { ReactNode } from "react";
 import { SuccessChip } from "./success-chip";
 import { ErrorChip } from "./error-chip";
@@ -11,15 +10,14 @@ export type ServiceStatus = "ok" | "failing" | "unknown";
 
 type ServiceProps = {
   name: string;
-  events: Record<PropertyKey, Array<Event>>;
+  events: Array<Event>;
   status: ServiceStatus;
   averageLatency: number | null;
 };
 
 export function Service(props: ServiceProps): ReactNode {
   const { name, events, status, averageLatency } = props;
-  const allEvents: Array<Event> = Object.values(events).flat();
-  const uptime = allEvents.filter((e) => e.ok).length / allEvents.length;
+  const uptime = events.filter((e) => e.ok).length / events.length;
   const uptimePercentage = maxTwoDecimals(uptime * 100);
 
   const statusIndicator = serviceStatusToVariant(status);
@@ -48,12 +46,11 @@ export function Service(props: ServiceProps): ReactNode {
   );
 }
 
-function Status(props: { events: Record<PropertyKey, Array<Event>>; name: string }): ReactNode {
-  if (Object.keys(props.events).length === 0) {
+function Status(props: { events: Array<Event>; name: string }): ReactNode {
+  if (props.events.length === 0) {
     return <span className="text-sm text-base-content/50">Ingen status enda</span>;
   } else {
-    const values = mapValues(props.events, (events) => events.map((event) => event.ok));
-    return <UptimeIndicator values={values} name={props.name} />;
+    return <UptimeChart events={props.events} name={props.name} />;
   }
 }
 
