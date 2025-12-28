@@ -1,30 +1,30 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { getConfig, type Config } from '../server/config';
-import services from './lib/services.server';
-import { AppShellWrapper } from './components/app-shell-wrapper';
+import "./globals.css";
+import type { Metadata } from "next";
+import { getConfig, type Config } from "../server/config";
+import services from "./lib/services.server";
+import { AppShellWrapper } from "./components/app-shell-wrapper";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: 'Monitor',
-  description: 'Service monitoring dashboard',
+  title: "Monitor",
+  description: "Service monitoring dashboard",
 };
 
 const menuItems = [
   {
-    link: '/',
-    label: 'Services',
+    link: "/",
+    label: "Services",
     enabled: () => true,
   },
   {
-    link: '/nodes',
-    label: 'Nodes',
+    link: "/nodes",
+    label: "Nodes",
     enabled: (config: Config) => (config.nodes?.length ?? 0) > 0,
   },
   {
-    link: '/config',
-    label: 'Config',
+    link: "/config",
+    label: "Config",
     enabled: () => true,
   },
 ];
@@ -40,24 +40,16 @@ async function getStatusInfo() {
   return { numberDown, operational, menu };
 }
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { operational, numberDown, menu } = await getStatusInfo();
 
   return (
-    <html lang="en" data-theme="corporate">
+    <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        <AppShellWrapper
-          operational={operational}
-          numberDown={numberDown}
-          menu={menu}
-        >
+        <AppShellWrapper operational={operational} numberDown={numberDown} menu={menu}>
           {children}
         </AppShellWrapper>
       </body>
