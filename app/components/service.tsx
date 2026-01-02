@@ -8,7 +8,7 @@ import { ErrorChip } from "./error-chip";
 
 export type ServiceStatus = "ok" | "failing" | "unknown";
 
-type ServiceProps = {
+export type ServiceProps = {
   name: string;
   events: Array<Event>;
   status: ServiceStatus;

@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import { Service, type ServiceStatus } from './service';
-import { type Event } from '../lib/events.server';
+import { Service, type ServiceStatus } from "./service";
+import { type Event } from "../lib/events.server";
+import { use } from "react";
 
 interface ServiceData {
   name: string;
@@ -11,13 +12,14 @@ interface ServiceData {
 }
 
 interface ServicesGridProps {
-  services: ServiceData[];
+  services: Promise<ServiceData[]>;
 }
 
 export function ServicesGrid({ services }: ServicesGridProps) {
+  const resolvedServices = use(services);
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-      {services.map((service) => (
+      {resolvedServices.map((service) => (
         <Service
           key={service.name}
           name={service.name}
