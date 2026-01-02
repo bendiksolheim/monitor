@@ -8,8 +8,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Cell,
-  TooltipProps,
 } from "recharts";
 import { type Event } from "../lib/events.server";
 

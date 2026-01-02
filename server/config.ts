@@ -43,8 +43,6 @@ const config = z.object({
 export type Config = z.infer<typeof config>;
 export type Service = z.infer<typeof service>;
 export type Heartbeat = z.infer<typeof heartbeats>;
-export type Ntfy = z.infer<typeof ntfy>;
-export type Healthchecksio = z.infer<typeof healthchecksio>;
 
 function getConfig(): Config {
   try {

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "project": ["app/**", "server/**"],
+  "entry": ["server/jobs/**.ts"],
+  "tags": ["-lintignore"],
+  "next": true,
+  "ignore": ["server/jobs/**.ts", "server/ts-worker/**"]
+}

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { prisma, type PrismaEvent } from "./db.server.ts";
 
-export const event = z.object({
+const event = z.object({
   id: z.number(),
   service: z.string(),
   ok: z.boolean(),
@@ -11,9 +11,9 @@ export const event = z.object({
 
 export type Event = z.infer<typeof event>;
 
-export const newEvent = event.omit({ id: true, created: true });
+const newEvent = event.omit({ id: true, created: true });
 
-export type NewEvent = z.infer<typeof newEvent>;
+type NewEvent = z.infer<typeof newEvent>;
 
 const create = (ev: NewEvent): Promise<Event> =>
   prisma()

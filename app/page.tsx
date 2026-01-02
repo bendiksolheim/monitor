@@ -1,5 +1,4 @@
 import { ServiceProps, type ServiceStatus } from "./components/service";
-import { SegmentedControlWrapper } from "./components/segmented-control-wrapper";
 import { ServicesGrid } from "./components/services-grid";
 import events, { type Event } from "./lib/events.server";
 import { getConfig } from "../server/config";

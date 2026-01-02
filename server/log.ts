@@ -29,7 +29,7 @@ function serializeArg(arg: any): string {
   }
 }
 
-export function log(level: LogLevel, ...args: any[]) {
+function log(level: LogLevel, ...args: any[]) {
   const now = new Date();
   const serialized = args.map(serializeArg).join(", ");
   const colorize = levelColors[level];
