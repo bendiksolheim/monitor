@@ -18,7 +18,14 @@ const healthchecksio = z.object({
   schedule: z.string(),
 });
 
-const heartbeats = z.discriminatedUnion("type", [healthchecksio]);
+const httpbin = z.object({
+  type: z.literal("httpbin"),
+  schedule: z.string(),
+});
+
+const heartbeats = z.discriminatedUnion("type", [healthchecksio, httpbin]);
+
+export { heartbeats };
 
 const ntfy = z.object({
   topic: z.string(),

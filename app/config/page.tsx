@@ -16,7 +16,7 @@ export default async function ConfigPage() {
 
         <Tabs defaultValue="parsed">
           <TabsList>
-            <TabsTab value="parsed">Prettified</TabsTab>
+            <TabsTab value="parsed">Parsed</TabsTab>
             <TabsTab value="raw">Raw</TabsTab>
           </TabsList>
 
@@ -50,16 +50,27 @@ function Pretty(props: { config: Config }): ReactNode {
         </div>
       </Section>
 
-      <Section title="Healthchecks.io">
+      <Section title="Heartbeat">
         {config.heartbeat ? (
           <Card shadow="xs">
             <dl className="space-y-2">
               <div>
-                <dt className="font-bold inline">Url: </dt>
-                <dd className="inline">{config.heartbeat.uuid}</dd>
+                <dt className="font-bold inline">Type: </dt>
+                <dd className="inline">{config.heartbeat.type}</dd>
               </div>
+              {config.heartbeat.type === "healthchecks.io" ? (
+                <div>
+                  <dt className="font-bold inline">UUID: </dt>
+                  <dd className="inline">{config.heartbeat.uuid}</dd>
+                </div>
+              ) : (
+                <div>
+                  <dt className="font-bold inline">Endpoint: </dt>
+                  <dd className="inline">https://httpbin.org/get</dd>
+                </div>
+              )}
               <div>
-                <dt className="font-bold inline">Expression: </dt>
+                <dt className="font-bold inline">Schedule: </dt>
                 <dd className="inline">{config.heartbeat.schedule}</dd>
               </div>
             </dl>

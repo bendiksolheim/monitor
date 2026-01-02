@@ -44,7 +44,7 @@ export function createScheduler(config: Config): Bree {
       path: path.join(jobsDir, `heartbeat.ts`),
       worker: {
         workerData: {
-          uuid: config.heartbeat.uuid,
+          heartbeat: config.heartbeat,
         },
       },
     });
