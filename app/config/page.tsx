@@ -1,37 +1,69 @@
 import { Card } from "~/components/ui/card";
-import { Tabs, TabsList, TabsPanel, TabsTab } from "~/components/ui/tabs";
 import { getConfig, type Config, type Service } from "../../server/config";
 import { ReactNode } from "react";
+import Link from "next/link";
+import { cn } from "~/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-export default async function ConfigPage() {
+interface SearchParams {
+  tab?: string;
+}
+
+export default async function ConfigPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const params = await searchParams;
+  const activeTab = params.tab || "parsed";
   const config = getConfig();
 
   return (
     <div>
       <Card shadow="xs">
         <h1 className="text-3xl font-bold mb-2">Configuration</h1>
-        <p className="text-base mb-4">This is the current configuration from config.json</p>
+        <p className="text-base mb-4">
+          This is the current configuration from config.json
+        </p>
+      </Card>
+      <div className="flex justify-center">
+        <div className="tabs tabs-box mb-4 gap-2" role="tablist">
+          <Link
+            href="?tab=parsed"
+            className={cn("tab transition-all duration-200", {
+              "tab-active font-semibold": activeTab === "parsed",
+              "hover:bg-base-200": activeTab !== "parsed",
+            })}
+            role="tab"
+          >
+            Parsed
+          </Link>
+          <Link
+            href="?tab=raw"
+            className={cn("tab transition-all duration-200", {
+              "tab-active font-semibold": activeTab === "raw",
+              "hover:bg-base-200": activeTab !== "raw",
+            })}
+            role="tab"
+          >
+            Raw
+          </Link>
+        </div>
+      </div>
 
-        <Tabs defaultValue="parsed">
-          <TabsList>
-            <TabsTab value="parsed">Parsed</TabsTab>
-            <TabsTab value="raw">Raw</TabsTab>
-          </TabsList>
-
-          <TabsPanel value="parsed">
+      <Card shadow="xs">
+        <div className="py-4" role="tabpanel">
+          {activeTab === "parsed" ? (
             <Pretty config={config} />
-          </TabsPanel>
-
-          <TabsPanel value="raw">
+          ) : (
             <div className="mockup-code">
               <pre>
                 <code>{JSON.stringify(config, undefined, 2)}</code>
               </pre>
             </div>
-          </TabsPanel>
-        </Tabs>
+          )}
+        </div>
       </Card>
     </div>
   );
