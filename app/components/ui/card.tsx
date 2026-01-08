@@ -8,7 +8,13 @@ type CardProps = {
   className?: string;
 };
 
-export function Card({ title, indicator, children, shadow = "xs", className }: CardProps) {
+export function Card({
+  title,
+  indicator,
+  children,
+  shadow = "xs",
+  className,
+}: CardProps) {
   const shadowClasses = {
     xs: "shadow-md",
     sm: "shadow-lg",

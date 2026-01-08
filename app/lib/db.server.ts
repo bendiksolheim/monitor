@@ -6,7 +6,7 @@ declare global {
   var __db__: PrismaClient | undefined;
 }
 
-function getClient(): PrismaClient {
+async function getClient(): Promise<PrismaClient> {
   const { DATABASE_URL } = process.env;
 
   const client = new PrismaClient({
@@ -17,21 +17,21 @@ function getClient(): PrismaClient {
     },
   });
 
-  client.$connect();
+  await client.$connect();
 
   return client;
 }
 
-export function prisma(): PrismaClient {
+export async function prisma(): Promise<PrismaClient> {
   if (_prisma) {
     return _prisma;
   }
 
   if (process.env.NODE_ENV === "production") {
-    _prisma = getClient();
+    _prisma = await getClient();
   } else {
     if (!global.__db__) {
-      global.__db__ = getClient();
+      global.__db__ = await getClient();
     }
     _prisma = global.__db__;
   }

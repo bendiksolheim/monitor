@@ -1,12 +1,17 @@
 import { prisma } from "./db.server.ts";
 
-const single = (
+const single = async (
   criteria: Parameters<
-    ReturnType<typeof prisma>["notification"]["findFirst"]
+    Awaited<ReturnType<typeof prisma>>["notification"]["findFirst"]
   >[0],
-) => prisma().notification.findFirst(criteria);
+) => {
+  const db = await prisma();
+  return db.notification.findFirst(criteria);
+};
 
-const create = (data: { message: string }) =>
-  prisma().notification.create({ data });
+const create = async (data: { message: string }) => {
+  const db = await prisma();
+  return db.notification.create({ data });
+};
 
 export default { single, create };

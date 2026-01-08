@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
-import services from '../../lib/services.server';
+import { NextResponse } from "next/server";
+import services from "../../lib/services.server";
 
 export async function GET() {
-  const version = process.env.VITE_VERSION || 'unknown';
+  const version = process.env.VITE_VERSION || "unknown";
 
   try {
     const latestStatus = await services.status();
@@ -12,17 +12,17 @@ export async function GET() {
       {
         version,
         operational,
-        ...(operational ? {} : { statuses: latestStatus })
+        ...(operational ? {} : { statuses: latestStatus }),
       },
-      { status: operational ? 200 : 500 }
+      { status: operational ? 200 : 500 },
     );
   } catch (e) {
     return NextResponse.json(
       {
         version,
-        message: 'Could not retrieve events from database'
+        message: "Could not retrieve events from database",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

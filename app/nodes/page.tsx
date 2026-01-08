@@ -39,7 +39,9 @@ export default async function NodesPage() {
                 <p className="text-sm">CPU: {s.info.cpu.toFixed(1)}%</p>
                 <p className="text-sm">Memory: {s.info.memory.toFixed(1)}%</p>
                 {s.info.temperature && (
-                  <p className="text-sm">Temperature: {s.info.temperature.toFixed(1)}°C</p>
+                  <p className="text-sm">
+                    Temperature: {s.info.temperature.toFixed(1)}°C
+                  </p>
                 )}
               </div>
             ) : (

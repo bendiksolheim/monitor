@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import { cn } from '~/lib/utils';
+import Link from "next/link";
+import { cn } from "~/lib/utils";
 
-type ButtonVariant = 'primary' | 'ghost' | 'outline';
+type ButtonVariant = "primary" | "ghost" | "outline";
 
 type ButtonProps = {
   children: React.ReactNode;
@@ -15,18 +15,22 @@ type ButtonProps = {
 export function Button({
   children,
   href,
-  variant = 'primary',
+  variant = "primary",
   leftSection,
   className,
   component,
 }: ButtonProps) {
   const variantClasses: Record<ButtonVariant, string> = {
-    primary: 'btn-primary shadow-md hover:shadow-lg',
-    ghost: 'btn-ghost hover:bg-base-200',
-    outline: 'btn-outline hover:shadow-md',
+    primary: "btn-primary shadow-md hover:shadow-lg",
+    ghost: "btn-ghost hover:bg-base-200",
+    outline: "btn-outline hover:shadow-md",
   };
 
-  const classes = cn('btn transition-all duration-200', variantClasses[variant], className);
+  const classes = cn(
+    "btn transition-all duration-200",
+    variantClasses[variant],
+    className,
+  );
 
   // If href is provided or component is Link, render as Link
   if (href || component === Link) {

@@ -43,7 +43,11 @@ function CustomTooltip({ active, payload }: any): ReactNode {
       <div className="text-xs space-y-1">
         <p>
           <span className="text-base-content/70">Status: </span>
-          <span className={data.ok ? "text-success font-medium" : "text-error font-medium"}>
+          <span
+            className={
+              data.ok ? "text-success font-medium" : "text-error font-medium"
+            }
+          >
             {data.ok ? "Success" : "Failed"}
           </span>
         </p>
@@ -53,7 +57,9 @@ function CustomTooltip({ active, payload }: any): ReactNode {
             <span className="font-medium">{data.latency}ms</span>
           </p>
         )}
-        {!data.ok && <p className="text-xs text-error/70 italic">No latency data</p>}
+        {!data.ok && (
+          <p className="text-xs text-error/70 italic">No latency data</p>
+        )}
       </div>
     </div>
   );
@@ -72,22 +78,31 @@ export function UptimeChart(props: UptimeChartProps): ReactNode {
   const { events, name } = props;
 
   // Transform events to chart data format
-  const chartData: ChartDataPoint[] = events.map((event) => ({
-    time: event.created.getTime(),
-    latency: event.ok && event.latency !== undefined ? event.latency : 0,
-    ok: event.ok,
-    created: event.created,
-  }));
+  // Note: created comes as a string from server component, convert to Date
+  const chartData: ChartDataPoint[] = events.map((event) => {
+    const created =
+      event.created instanceof Date ? event.created : new Date(event.created);
+    return {
+      time: created.getTime(),
+      latency: event.ok && event.latency !== undefined ? event.latency : 0,
+      ok: event.ok,
+      created: created,
+    };
+  });
 
   // Filter only successful events with latency for trend line
   const successfulEvents = events
     .filter((e) => e.ok && e.latency !== undefined)
-    .map((e) => ({
-      time: e.created.getTime(),
-      latency: e.latency!,
-      ok: e.ok,
-      created: e.created,
-    }));
+    .map((e) => {
+      const created =
+        e.created instanceof Date ? e.created : new Date(e.created);
+      return {
+        time: created.getTime(),
+        latency: e.latency!,
+        ok: e.ok,
+        created: created,
+      };
+    });
 
   if (chartData.length === 0) {
     return (
@@ -99,12 +114,24 @@ export function UptimeChart(props: UptimeChartProps): ReactNode {
 
   return (
     <ResponsiveContainer width="100%" height={180}>
-      <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+      <ComposedChart
+        data={chartData}
+        margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+      >
         {/* Grid */}
-        <CartesianGrid strokeDasharray="3 3" stroke="var(--base-300)" opacity={0.5} />
+        <CartesianGrid
+          strokeDasharray="3 3"
+          stroke="var(--base-300)"
+          opacity={0.5}
+        />
 
         {/* X-Axis: Hidden */}
-        <XAxis dataKey="time" type="number" domain={["dataMin", "dataMax"]} hide={true} />
+        <XAxis
+          dataKey="time"
+          type="number"
+          domain={["dataMin", "dataMax"]}
+          hide={true}
+        />
 
         {/* Y-Axis: Hidden */}
         <YAxis hide={true} />
@@ -128,7 +155,12 @@ export function UptimeChart(props: UptimeChartProps): ReactNode {
         />
 
         {/* Scatter plot for all events */}
-        <Scatter data={chartData} dataKey="latency" isAnimationActive={false} shape={customDot} />
+        <Scatter
+          data={chartData}
+          dataKey="latency"
+          isAnimationActive={false}
+          shape={customDot}
+        />
       </ComposedChart>
     </ResponsiveContainer>
   );

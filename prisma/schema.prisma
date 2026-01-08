@@ -12,11 +12,13 @@ datasource db {
 }
 
 model Event {
-  id Int @id @default(autoincrement())
+  id      Int      @id @default(autoincrement())
   service String
-  status String
+  status  String
   created DateTime @default(now())
   latency Int?
+
+  @@index([service, created], name: "idx_event_service_created")
 }
 
 model Notification {

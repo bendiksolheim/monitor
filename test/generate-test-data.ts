@@ -9,7 +9,8 @@ const config = getConfig();
 const services = config.services.map((service) => service.service);
 
 // Delete all existing data
-const removed = await prisma().event.deleteMany();
+const db = await prisma();
+const removed = await db.event.deleteMany();
 console.log(`Removed ${removed.count} old events`);
 
 // Generate new data
@@ -19,7 +20,7 @@ services.forEach(async (service) => {
   let oneDayAgo: Second = now - 86_400;
   while (oneDayAgo < now) {
     if (Math.random() < 0.005) {
-      await prisma().event.create({
+      await db.event.create({
         data: {
           status: "ERROR",
           service: service,
@@ -27,7 +28,7 @@ services.forEach(async (service) => {
         },
       });
     } else {
-      await prisma().event.create({
+      await db.event.create({
         data: {
           status: "OK",
           service: service,

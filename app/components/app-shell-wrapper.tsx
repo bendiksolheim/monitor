@@ -18,7 +18,12 @@ const icons: Record<string, React.ComponentType<any>> = {
   Config: IconSettings,
 };
 
-export function AppShellWrapper({ children, operational, numberDown, menu }: AppShellWrapperProps) {
+export function AppShellWrapper({
+  children,
+  operational,
+  numberDown,
+  menu,
+}: AppShellWrapperProps) {
   return (
     <div className="min-h-screen bg-base-200">
       {/* Navigation Bar */}
@@ -32,7 +37,9 @@ export function AppShellWrapper({ children, operational, numberDown, menu }: App
         {/* Center: Status Badge */}
         <div className="navbar-center">
           <Badge variant={operational ? "success" : "error"} size="lg">
-            {operational ? "All good ✌️" : `${numberDown} service${numberDown > 1 ? "s" : ""} down`}
+            {operational
+              ? "All good ✌️"
+              : `${numberDown} service${numberDown > 1 ? "s" : ""} down`}
           </Badge>
         </div>
 

@@ -48,7 +48,9 @@ export function Service(props: ServiceProps): ReactNode {
 
 function Status(props: { events: Array<Event>; name: string }): ReactNode {
   if (props.events.length === 0) {
-    return <span className="text-sm text-base-content/50">Ingen status enda</span>;
+    return (
+      <span className="text-sm text-base-content/50">Ingen status enda</span>
+    );
   } else {
     return <UptimeChart events={props.events} name={props.name} />;
   }

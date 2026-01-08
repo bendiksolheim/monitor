@@ -7,6 +7,7 @@ import { last } from "./util/arrays";
 import Link from "next/link";
 import { cn } from "./lib/utils";
 import { Suspense } from "react";
+import { unstable_cache } from "next/cache";
 
 interface SearchParams {
   show?: string;
@@ -14,7 +15,11 @@ interface SearchParams {
 
 const statuses = ["all", "failing", "unknown"] as const;
 
-export default async function Page({ searchParams }: { searchParams: Promise<SearchParams> }) {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
   const params = await searchParams;
   const show = getShowParam(params.show);
 
@@ -28,7 +33,9 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
             <Link
               href={`?show=${status}`}
               key={status}
-              className={cn("capitalize tab", { "tab-active": status === show })}
+              className={cn("capitalize tab", {
+                "tab-active": status === show,
+              })}
               role="tab"
             >
               {status}
@@ -43,44 +50,75 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
   );
 }
 
-async function getServices(status: (typeof statuses)[number]): Promise<Array<ServiceProps>> {
-  const services = getConfig()
-    .services.map((service) => service.service)
-    .sort();
-  const eventsByService = await events.get({
-    where: { service: { in: services }, created: { gte: getSince() } },
-    orderBy: [{ service: "asc" }, { created: "asc" }],
-  });
-  const groupedServices = eventsByService.reduce(
-    (acc, event) => {
-      if (!acc[event.service]) {
-        acc[event.service] = {
-          name: event.service,
-          events: [],
-          averageLatency: 0,
-          status: "unknown",
-        };
-      }
+// Cache TTL in seconds (configurable via environment variable)
+const CACHE_TTL = parseInt(process.env.SERVICES_CACHE_TTL || "60", 10);
 
-      acc[event.service].events.push(event);
-      return acc;
-    },
-    {} as Record<
-      string,
-      { name: string; events: Array<Event>; averageLatency: number; status: ServiceStatus }
-    >,
-  );
+// Cached version of getServicesData
+const getCachedServicesData = unstable_cache(
+  async () => {
+    const services = getConfig()
+      .services.map((service) => service.service)
+      .sort();
 
-  Object.keys(groupedServices).forEach((service) => {
-    const latencies = groupedServices[service].events
-      .map((event) => event.latency)
-      .filter((l): l is number => l !== null && l !== undefined);
-    const averageLatency = latencies.reduce((acc, latency) => acc + latency, 0) / latencies.length;
-    groupedServices[service].averageLatency = averageLatency;
-    groupedServices[service].status = serviceStatus(last(groupedServices[service].events));
-  });
+    const since = getSince();
 
-  return Object.values(groupedServices).filter((service) => {
+    // Fetch events and average latencies in parallel
+    const [eventsByService, avgLatencies] = await Promise.all([
+      events.get({
+        where: { service: { in: services }, created: { gte: since } },
+        orderBy: [{ service: "asc" }, { created: "asc" }],
+      }),
+      events.averageLatencyByService(services, since),
+    ]);
+
+    const groupedServices = eventsByService.reduce(
+      (acc, event) => {
+        if (!acc[event.service]) {
+          acc[event.service] = {
+            name: event.service,
+            events: [],
+            averageLatency: avgLatencies[event.service] ?? 0,
+            status: "unknown" as ServiceStatus,
+          };
+        }
+
+        acc[event.service].events.push(event);
+        return acc;
+      },
+      {} as Record<
+        string,
+        {
+          name: string;
+          events: Array<Event>;
+          averageLatency: number;
+          status: ServiceStatus;
+        }
+      >,
+    );
+
+    // Determine status from last event
+    Object.keys(groupedServices).forEach((service) => {
+      groupedServices[service].status = serviceStatus(
+        last(groupedServices[service].events),
+      );
+    });
+
+    return Object.values(groupedServices);
+  },
+  ["services-data"], // Cache key
+  {
+    revalidate: CACHE_TTL, // Revalidate every 60 seconds (or configured value)
+    tags: ["services"], // Cache tag for manual invalidation if needed
+  },
+);
+
+async function getServices(
+  status: (typeof statuses)[number],
+): Promise<Array<ServiceProps>> {
+  const allServices = await getCachedServicesData();
+
+  // Filter by status (filtering happens after cache to maximize cache hits)
+  return allServices.filter((service) => {
     switch (status) {
       case "all":
         return true;

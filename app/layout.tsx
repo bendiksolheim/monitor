@@ -40,7 +40,11 @@ async function getStatusInfo() {
   return { numberDown, operational, menu };
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { operational, numberDown, menu } = await getStatusInfo();
 
   return (
@@ -49,7 +53,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        <AppShellWrapper operational={operational} numberDown={numberDown} menu={menu}>
+        <AppShellWrapper
+          operational={operational}
+          numberDown={numberDown}
+          menu={menu}
+        >
           {children}
         </AppShellWrapper>
       </body>
