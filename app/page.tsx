@@ -7,7 +7,6 @@ import { last } from "./util/arrays";
 import Link from "next/link";
 import { cn } from "./lib/utils";
 import { Suspense } from "react";
-import { unstable_cache } from "next/cache";
 
 interface SearchParams {
   show?: string;
@@ -51,66 +50,85 @@ export default async function Page({
 }
 
 // Cache TTL in seconds (configurable via environment variable)
-const CACHE_TTL = parseInt(process.env.SERVICES_CACHE_TTL || "60", 10);
+const CACHE_TTL_SECONDS = parseInt(process.env.SERVICES_CACHE_TTL || "60", 10);
+const CACHE_TTL_MS = CACHE_TTL_SECONDS * 1000;
 
-// Cached version of getServicesData
-const getCachedServicesData = unstable_cache(
-  async () => {
-    const services = getConfig()
-      .services.map((service) => service.service)
-      .sort();
+// Manual cache with true expiration (not stale-while-revalidate)
+let servicesCache: {
+  data: Array<ServiceProps>;
+  timestamp: number;
+} | null = null;
 
-    const since = getSince();
+async function fetchServicesData(): Promise<Array<ServiceProps>> {
+  const services = getConfig()
+    .services.map((service) => service.service)
+    .sort();
 
-    // Fetch events and average latencies in parallel
-    const [eventsByService, avgLatencies] = await Promise.all([
-      events.get({
-        where: { service: { in: services }, created: { gte: since } },
-        orderBy: [{ service: "asc" }, { created: "asc" }],
-      }),
-      events.averageLatencyByService(services, since),
-    ]);
+  const since = getSince();
 
-    const groupedServices = eventsByService.reduce(
-      (acc, event) => {
-        if (!acc[event.service]) {
-          acc[event.service] = {
-            name: event.service,
-            events: [],
-            averageLatency: avgLatencies[event.service] ?? 0,
-            status: "unknown" as ServiceStatus,
-          };
-        }
+  // Fetch events and average latencies in parallel
+  const [eventsByService, avgLatencies] = await Promise.all([
+    events.get({
+      where: { service: { in: services }, created: { gte: since } },
+      orderBy: [{ service: "asc" }, { created: "asc" }],
+    }),
+    events.averageLatencyByService(services, since),
+  ]);
 
-        acc[event.service].events.push(event);
-        return acc;
-      },
-      {} as Record<
-        string,
-        {
-          name: string;
-          events: Array<Event>;
-          averageLatency: number;
-          status: ServiceStatus;
-        }
-      >,
+  const groupedServices = eventsByService.reduce(
+    (acc, event) => {
+      if (!acc[event.service]) {
+        acc[event.service] = {
+          name: event.service,
+          events: [],
+          averageLatency: avgLatencies[event.service] ?? 0,
+          status: "unknown" as ServiceStatus,
+        };
+      }
+
+      acc[event.service].events.push(event);
+      return acc;
+    },
+    {} as Record<
+      string,
+      {
+        name: string;
+        events: Array<Event>;
+        averageLatency: number;
+        status: ServiceStatus;
+      }
+    >,
+  );
+
+  // Determine status from last event
+  Object.keys(groupedServices).forEach((service) => {
+    groupedServices[service].status = serviceStatus(
+      last(groupedServices[service].events),
     );
+  });
 
-    // Determine status from last event
-    Object.keys(groupedServices).forEach((service) => {
-      groupedServices[service].status = serviceStatus(
-        last(groupedServices[service].events),
-      );
-    });
+  return Object.values(groupedServices);
+}
 
-    return Object.values(groupedServices);
-  },
-  ["services-data"], // Cache key
-  {
-    revalidate: CACHE_TTL, // Revalidate every 60 seconds (or configured value)
-    tags: ["services"], // Cache tag for manual invalidation if needed
-  },
-);
+async function getCachedServicesData(): Promise<Array<ServiceProps>> {
+  const now = Date.now();
+
+  // Check if cache exists and is still valid
+  if (servicesCache && (now - servicesCache.timestamp) < CACHE_TTL_MS) {
+    return servicesCache.data;
+  }
+
+  // Cache is stale or doesn't exist - fetch fresh data
+  const freshData = await fetchServicesData();
+
+  // Update cache
+  servicesCache = {
+    data: freshData,
+    timestamp: now,
+  };
+
+  return freshData;
+}
 
 async function getServices(
   status: (typeof statuses)[number],
