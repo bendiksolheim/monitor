@@ -1,5 +1,7 @@
 # monitor
 
+**NOTICE: this is now deprecated, and will no longer be updated. Not with new features, not with updated bumped library versions. I wanted a more barebones monitoring system using minimal system resources, and therefore created https://github.com/bendiksolheim/varde instead. Varde is my focus going forward.**
+
 [![Build and publish docker image](https://github.com/bendiksolheim/monitor/actions/workflows/build-and-publish.yml/badge.svg)](https://github.com/bendiksolheim/monitor/actions/workflows/build-and-publish.yml) [![Docker Image Version](https://img.shields.io/docker/v/bendiksolheim/monitor?sort=semver)](https://hub.docker.com/r/bendiksolheim/monitor)
 
 
